@@ -1,3 +1,5 @@
+[![Build Status](https://api.travis-ci.org/AnFengDe/afdui.png?branch=master)](https://api.travis-ci.org/AnFengDe/afdui)
+
 afdui
 =====
 
