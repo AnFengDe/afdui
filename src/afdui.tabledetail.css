@@ -1,0 +1,72 @@
+.afdui-td {
+	font-size: .8em;
+	padding: 0px;
+}
+.afdui-td-titlebar {
+	border: 0;
+	border-radius: 1px;
+}
+
+.afdui-td-detailTabs {
+	border: 1px solid #828282;
+	background: #ffffff; 
+	padding: 0px;
+	margin-top:10px;
+}
+.afdui-td-input {
+}
+
+table.dataTable tr.odd {
+	background: #ffffff;
+}
+table.dataTable tr.odd.hover {
+	background: #f5f5f5;
+}
+table.dataTable tr.odd.clickedtr {
+	background: #fef8e0;
+}
+
+table.dataTable tr.odd td.sorting_1 {
+	background: #ffffff;
+}
+table.dataTable tr.odd td.sorting_1.hover {
+	background: #f5f5f5
+}
+table.dataTable tr.odd td.sorting_1.clickedtr {
+	background: #fef8e0;
+}
+
+table.dataTable tr.even {
+	background: #eaf6fd;
+}
+table.dataTable tr.even.hover {
+	background: #d8effc;
+}
+table.dataTable tr.even.clickedtr {
+	background: #f5e8c8;
+}
+
+table.dataTable tr.even td.sorting_1 {
+	background: #eaf6fd;
+}
+table.dataTable tr.even td.sorting_1.hover {
+	background: #d8effc;
+}
+table.dataTable tr.even td.sorting_1.clickedtr {
+	background: #f5e8c8;
+}
+
+.afdui-enterbar{
+    border-top:1px solid #cccccc;
+    margin-top:50px;
+}
+.ui-tabs-anchor{
+    height:19px;
+    padding-bottom:0px;
+}
+.ui-state-active{
+    background: #ffffff !important;
+}
+.ui-state-active a {
+    color:#000000 !important;
+}
