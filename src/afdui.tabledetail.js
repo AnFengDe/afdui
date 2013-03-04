@@ -116,6 +116,7 @@
         _create : function() {
         },
         destroy : function() {
+            $.ui.dialog.prototype.destroy.apply(this);
         }
     /**
      * widget's events
