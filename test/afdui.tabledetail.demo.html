@@ -149,6 +149,21 @@
 					},
 					"clickTr" : function(e, ui) {
 						ui.thistr.style.color = 'black';
+					},
+					//custom event function have a event args,but others don't have 
+					"formValidator" : function(obj) {
+					    if ((obj.id.value === obj.name.value) && (obj.id.value.length !== 0 && obj.name.value.length !== 0)) {
+							return 'the values of id is can\'t the same as the values of name!';
+						}
+					},
+					"filedValidator" : function(data) {
+					    for (var i = 0; i < data.length; i++) {
+							for (var j = i + 1; j < data.length; j++) {
+								if (data[i].id === data[j].id) {
+									return 'can\'t the repeat id!' + data[i].id;
+								}
+							}
+						}   
 					}
 				};
 				var td = $('#tblDetail').tabledetail(createOptions).tabledetail("addData", lineData).tabledetail("remoteAjax", {
@@ -156,22 +171,6 @@
 					"edit" : "/powerflow/api/config/devices/buses/_name_",
 					"remove" : "/powerflow/api/config/devices/buses/_id_"
 				});
-				var callback = function(obj) {
-					if (obj.id.value === obj.name.value) {
-						return 'the values of id is can\'t the same as the values of name!';
-					}
-				}
-				var callback2 = function(data) {
-					for (var i = 0; i < data.length; i++) {
-						for (var j = i + 1; j < data.length; j++) {
-							if (data[i].id === data[j].id) {
-								return 'can\'t the repeat id!' + data[i].id;
-							}
-						}
-					}
-				}
-				td.tabledetail("validatorForm", callback);
-				td.tabledetail("validatorTable", callback2);
 			});
 
         </script>
