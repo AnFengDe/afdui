@@ -11,40 +11,6 @@
      * throws(block, [expected], [message])
      */
 
-    module('afd Table Detail options testsuite');
-    asyncTest('test the page basic value', function() {
-        $.when($.ajax({
-            url : "tabledetail_options_test.json",
-            dataType : "json"
-        })).done(
-                function(options) {
-                    var td = $('#tblDetail').tabledetail(options);
-
-                    ok(360 === td.tabledetail("option", "width"), "the wigth is right");
-                    ok(240 === td.tabledetail("option", "height"), "the high is right");
-
-                    var defaultTableOption = {
-                        "sScrollY" : "200px",
-                        "bLengthChange" : false,
-                        "iDisplayLength" : 10,
-                        "bJQueryUI" : true
-                    };
-                    var key = null;
-                    for (key in defaultTableOption) {
-                        if (td.tabledetail("option", "table")[key] === undefined
-                                || td.tabledetail("option", "table")[key] !== defaultTableOption[key]) {
-                            ok(false, key + " " + defaultTableOption[key] + "the setting error");
-                        }
-                    }
-
-                    td.tabledetail("destroy");
-                    start();
-                }).fail(function() {
-            ok(false, "load tabledetail_options_test.json is error");
-            start();
-        });
-    });
-
     var testOptions = {
         "width" : 800,
         "height" : 540,
@@ -87,7 +53,7 @@
                     "id" : "name",
                     "type" : "input",
                     "format" : "text",
-                    "read" : false,
+                    "readonly" : false,
                     "maxlength" : 32,
                     "size" : 32,
                     "validator" : function(value) {
@@ -99,7 +65,7 @@
                     "id" : "alias",
                     "type" : "input",
                     "format" : "text",
-                    "read" : false,
+                    "readonly" : false,
                     "maxlength" : 16,
                     "size" : 16,
                     "mask" : "9999",
@@ -122,7 +88,7 @@
                         "id" : "3",
                         "name" : "110kV"
                     } ],
-                    "read" : false,
+                    "readonly" : false,
                     "maxlength" : 16,
                     "size" : 16
                 } ]
@@ -136,7 +102,7 @@
                     "type" : "select",
                     "format" : "number",
                     "options" : "info_substation.json",
-                    "read" : false,
+                    "readonly" : false,
                     "maxlength" : 16,
                     "size" : 20
                 }, {
@@ -145,7 +111,7 @@
                     "type" : "select",
                     "format" : "number",
                     "options" : "info_substation.json",
-                    "read" : false,
+                    "readonly" : false,
                     "maxlength" : 16,
                     "size" : 20
                 } ]
@@ -213,13 +179,47 @@
         }
     };
 
-    module('afd Table Detail get set datas');
     var tdLoadInit = function(data) {
         var td = $('#tblDetail').tabledetail(testOptions);
         td.tabledetail('addData', data);
         return td;
     };
+    
+    module('afd Table Detail options testsuite');
+    asyncTest('test the page basic value', function() {
+        $.when($.ajax({
+            url : "info_line.json",
+            dataType : "json"
+        })).done(
+                function(data) {
+                    var td = tdLoadInit(data);
 
+                    ok(800 === td.tabledetail("option", "width"), "the wigth is right");
+                    ok(540 === td.tabledetail("option", "height"), "the height is right");
+
+                    var defaultTableOption = {
+                        "sScrollY" : "200px",
+                        "bLengthChange" : false,
+                        "iDisplayLength" : 25,
+                        "bJQueryUI" : true
+                    };
+                    var key = null;
+                    for (key in defaultTableOption) {
+                        if (td.tabledetail("option", "table")[key] === undefined
+                                || td.tabledetail("option", "table")[key] !== defaultTableOption[key]) {
+                            ok(false, key + " " + defaultTableOption[key] + "the setting error");
+                        }
+                    }
+
+                    td.tabledetail("destroy");
+                    start();
+                }).fail(function() {
+            ok(false, "info_line.json is error");
+            start();
+        });
+    });
+
+    module('afd Table Detail get set datas');
     asyncTest('settingdata-JSON', function() {
         $.when($.ajax({
             url : "info_line.json",

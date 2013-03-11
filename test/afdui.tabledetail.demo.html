@@ -29,7 +29,8 @@
 					},
 					async : false
 				});
-				var td = $('#tblDetail').tabledetail({
+
+				var createOptions = {
 					"width" : 1000,
 					"height" : 540,
 					"table" : {
@@ -42,7 +43,7 @@
 						}, {
 							"sTitle" : "Name",
 							"mData" : "name",
-							"sWidth" : "50%"
+							"sWidth" : "45%"
 						}, {
 							"sTitle" : "Alias",
 							"mData" : "alias",
@@ -50,7 +51,7 @@
 						}, {
 							"sTitle" : "Voltage Level",
 							"mData" : "voltageLevel",
-							"sWidth" : "15%"
+							"sWidth" : "20%"
 						}]
 					},
 					"form" : {
@@ -63,7 +64,7 @@
 								"id" : "id",
 								"type" : "input",
 								"format" : "number",
-								"read" : false,
+								"readonly" : false,
 								"maxlength" : 10,
 								"size" : 10
 							}, {
@@ -71,7 +72,7 @@
 								"id" : "name",
 								"type" : "input",
 								"format" : "text",
-								"read" : false,
+								"readonly" : false,
 								"maxlength" : 32,
 								"size" : 32,
 								"validator" : function(value) {
@@ -86,7 +87,7 @@
 								"id" : "alias",
 								"type" : "input",
 								"format" : "text",
-								"read" : false,
+								"readonly" : false,
 								"maxlength" : 4,
 								"size" : 4,
 								"mask" : "9999",
@@ -109,7 +110,7 @@
 									"id" : "3",
 									"name" : "110kV"
 								}],
-								"read" : false,
+								"readonly" : false,
 								"maxlength" : 16,
 								"size" : 16
 							}]
@@ -123,7 +124,7 @@
 								"type" : "select",
 								"format" : "number",
 								"options" : "info_substation.json",
-								"read" : false,
+								"readonly" : false,
 								"maxlength" : 16,
 								"size" : 20
 							}, {
@@ -132,7 +133,7 @@
 								"type" : "select",
 								"format" : "number",
 								"options" : "info_substation.json",
-								"read" : false,
+								"readonly" : false,
 								"maxlength" : 16,
 								"size" : 20
 							}]
@@ -149,9 +150,8 @@
 					"clickTr" : function(e, ui) {
 						ui.thistr.style.color = 'black';
 					}
-				});
-				td.tabledetail("addData", lineData);
-				td.tabledetail("remoteAjax", {
+				};
+				var td = $('#tblDetail').tabledetail(createOptions).tabledetail("addData", lineData).tabledetail("remoteAjax", {
 					"create" : "/powerflow/api/config/devices/buses/new",
 					"edit" : "/powerflow/api/config/devices/buses/_name_",
 					"remove" : "/powerflow/api/config/devices/buses/_id_"

@@ -79,7 +79,8 @@
             }
         },
         /**
-         * @name tableDetailOptions
+         * @name tableDetailOptions  
+         * @TODO hoverTr, clickTr要考虑放在定义的合适位置
          * @description tabledetail options
          * @property {Integer} width the form width
          * @property {Integer} height the form height
@@ -113,7 +114,7 @@
          * @memberOf tabledetail#
          */
         _create : function() {
-            this._setOption();
+            this._setOptions();
             $.ui.dialog.prototype._create.apply(this);
             this._buildTable();
             this._buildDetailForm();
@@ -162,7 +163,7 @@
          * @function
          * @memberOf tabledetail#
          */
-        _setOption : function() {
+        _setOptions : function() {
             if (this.options.form === null && this.options.table === null) {
                 throw new Error('the table data or form data can\'t null in the option');
             }
@@ -485,7 +486,7 @@
                     });
                 }
                 return '<input id="detail_' + input.id + '" class="afdui-td-input" type="' + input.format + '" maxlength="'
-                        + input.maxlength + '" size="' + input.size + '" ' + (input.read ? 'readonly ' : '')
+                        + input.maxlength + '" size="' + input.size + '" ' + (input.readonly ? 'readonly ' : '')
                         + this._buildInputMessage(input.message) + '>';
             }
             if ("select" === input.type) {
