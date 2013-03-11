@@ -171,39 +171,6 @@
             this.options.buttons = $.extend({}, this.options.buttons, this._BUTTON_DEFAULT);
         },
         /**
-         * create the tablehead
-         * <li>this function not accept any parameter</li>
-         * 
-         * @private
-         * @function
-         * @memberOf tabledetail#
-         */
-        _buildTableHead : function() {
-            var secondHeader = [];
-            var html = "<thead><tr>";
-            var i = 0;
-            for (i = 0; i < this.options.tableHeader.length; i++) {
-                html = html + "<th rowspan=\"" + this.options.tableHeader[i].rowspan;
-                html = html + "\" colspan=\"" + this.options.tableHeader[i].colspan + "\" ";
-                html = html + "class=\"ui-state-default\"" + ">";
-                html = html + this.options.tableHeader[i].title + "</th>";
-                if (this.options.tableHeader[i].cols !== undefined) {
-                    secondHeader.push.apply(secondHeader, this.options.tableHeader[i].cols);
-                }
-            }
-            if (secondHeader.length !== 0) {
-                html += "</tr><tr>";
-                for (i = 0; i < secondHeader.length; i++) {
-                    html = html + "<th rowspan=\"" + secondHeader[i].rowspan;
-                    html = html + "\" colspan=\"" + secondHeader[i].colspan + "\" ";
-                    html = html + "class=\"ui-state-default\"" + ">";
-                    html = html + secondHeader[i].title + "</th>";
-                }
-            }
-            html += "</tr></thead>";
-            return html;
-        },
-        /**
          * create the table which the id is dataTbale,and create the div which
          * the id is tableDiv
          * <li>this function not accept any parameter</li>
@@ -216,9 +183,6 @@
             var el = this.element;
             var html = "<div id = \"tableDiv\"><table  cellpadding=\"0\" cellspacing=\"0\" border=\"0\" id=\"";
             html += "dataTable\" width=\"100%\">";
-            if (this.options.table.aoColumns === undefined) {
-                html += this._buildTableHead();
-            }
             html += "</table></div>";
             $(html).appendTo(el);
             this._table = $('#dataTable');
