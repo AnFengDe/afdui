@@ -10,23 +10,14 @@
   "unused": true,
   "boss": true,
   "eqnull": true,
-  "browser": true,
+  "node": true,
+  "laxbreak": true,
+  "es5": true,
   "predef": [
-    "jQuery",
-    "QUnit",
-    "module",
-    "test",
-    "asyncTest",
-    "expect",
-    "start",
-    "stop",
     "ok",
-    "equal",
-    "notEqual",
-    "deepEqual",
-    "notDeepEqual",
-    "strictEqual",
-    "notStrictEqual",
-    "throws"
-  ]
+    "jQuery",
+    "asyncTest",
+    "start",
+    "stop"
+    ]
 }

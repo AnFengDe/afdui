@@ -1,0 +1,76 @@
+﻿{
+	"width": 360,
+	"height": 240,
+	"table": {
+		"iDisplayLength": 10
+	},
+	"tableHeader": [
+		{
+			"title": "期次",
+			"rowspan": 2,
+			"colspan": 1
+		}, {
+			"title": "中奖等级",
+			"rowspan": 2,
+			"colspan": 1
+		}, {
+			"title": "红球",
+			"rowspan": 1,
+			"colspan": 6,
+			"cols": [
+				{
+					"title": "1",
+					"rowspan": 1,
+					"colspan": 1
+				}, {
+					"title": "2",
+					"rowspan": 1,
+					"colspan": 1
+				}, {
+					"title": "3",
+					"rowspan": 1,
+					"colspan": 1
+				}, {
+					"title": "4",
+					"rowspan": 1,
+					"colspan": 1
+				}, {
+					"title": "5",
+					"rowspan": 1,
+					"colspan": 1
+				}, {
+					"title": "6",
+					"rowspan": 1,
+					"colspan": 1
+				}
+			]
+		}, {
+			"title": "兰球",
+			"rowspan": 1,
+			"colspan": 1,
+			"cols": [
+				{
+					"title": "1",
+					"rowspan": 1,
+					"colspan": 1
+				}
+			]
+		}
+	],
+	"form" : {
+            "pages" : [ {
+                "title" : "基本信息",
+                "rows" : 1,
+                "cols" : 1,
+                "controls" : [ {
+                    "label" : "ID",
+                    "id" : "id",
+                    "type" : "input",
+                    "format" : "number",
+                    "read" : true,
+                    "maxlength" : 10,
+                    "size" : 10
+                } ]
+            } ]
+        }
+}

@@ -34,7 +34,7 @@ module.exports = function(grunt) {
             },
         },
         qunit : {
-            files : [ 'test/**/*.html' ]
+            files : [ 'test/**/*test.html' ]
         },
         jsdoc : {
             dist : {
