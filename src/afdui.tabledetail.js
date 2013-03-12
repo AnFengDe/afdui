@@ -127,6 +127,7 @@
             $('.ui-dialog').addClass('afdui-td');
             $('.ui-dialog-titlebar').addClass('afdui-td-titlebar');
 
+            //TODO:refactor less code for similar 
             this._btn_new = $('#detail_btn_new');
             this._btn_save = $('#detail_btn_save');
             this._btn_delete = $('#detail_btn_delete');
@@ -137,9 +138,8 @@
 
         },
         /**
-         * widget's methods
+         * destroy method
          * 
-         * @construct
          * @memberOf tabledetail#
          */
         destroy : function() {
@@ -151,6 +151,7 @@
             // clean the message of showing
             $('.ui-tooltip').remove();
             $('#tblDetailDialog').dialog('destroy').remove();
+            
             this._table.remove();
 
             $.ui.dialog.prototype.destroy.apply(this);
@@ -167,41 +168,34 @@
          */
         _setOption : function() {
             if (this.options.form === null && this.options.table === null) {
-                throw new Error('the table data or form data can\'t null in the option');
+                throw new Error('The table or form options must be set.');
             }
 
             this.options.table = $.extend({}, this._TABLE_DEFAULT, this.options.table);
             this.options.buttons = $.extend({}, this.options.buttons, this._BUTTON_DEFAULT);
         },
         /**
-         * create the table which the id is dataTbale,and create the div which
-         * the id is tableDiv
-         * <li>this function not accept any parameter</li>
-         * 
+         * create html table tag
          * @private
          * @function
          * @memberOf tabledetail#
          */
         _buildTable : function() {
-            var el = this.element;
-            var html = "<div id = \"tableDiv\"><table  cellpadding=\"0\" cellspacing=\"0\" border=\"0\" id=\"";
-            html += "dataTable\" width=\"100%\">";
-            html += "</table></div>";
-            $(html).appendTo(el);
+            var html = "<div id = \"tableDiv\"><table  cellpadding=\"0\" cellspacing=\"0\" border=\"0\" id=\"dataTable\" width=\"100%\"></table></div>";
+            $(html).appendTo(this.element);
             this._table = $('#dataTable');
             this._table.dataTable(this.options.table);
         },
         /**
-         * conversion raw data according to code
+         * conversion raw code to display string
          * 
          * @function
          * @memberOf tabledetail#
-         * @param {JSON}
-         * @return {JSON}
+         * @param {JSON} raw raw data
+         * @return {JSON} the changed raw data contain display string
          */
         _raw2display : function(raw) {
-            var self = this;
-            $.each(self._code, function(key, define) {
+            $.each(this._code, function(key, define) {
                 $.each(raw, function(index, value) {
                     value[key] = define[value[key]];
                 });
@@ -209,14 +203,14 @@
             return raw;
         },
         /**
-         * conversion display data according to code
+         * conversion display string to raw code
          * 
          * @function
          * @private
          * @memberOf tabledetail#
          * @param {JSON}
-         *            json object
-         * @return {JSON} retrun object
+         *            display display string
+         * @return {JSON} retrun raw data code
          */
         _display2raw : function(display) {
             var self = this;
@@ -240,30 +234,29 @@
             return raw;
         },
         /**
-         * addData,it's can be obj or array
+         * add data to widget, must be json object or json object array
          * 
          * @function
          * @private
          * @memberOf tabledetail#
          * @param {JSON|ARRAY}
-         *            data jsonobj or json array
+         *            data json object or json object array
          */
         addData : function(data) {
-            var display = this._raw2display(data);
-            this._table.dataTable().fnAddData(display);
+            this._table.dataTable().fnAddData(this._raw2display(data));
         },
         /**
-         * get the data of table
+         * get the data of widget
          * 
          * @function
          * @memberOf tabledetail#
-         * @return {ARRAY} data json obj data
+         * @return {ARRAY} data json object data or json object array
          */
         getData : function() {
             return this._display2raw(this._table.fnGetData());
         },
         /**
-         * clean the data of table
+         * clean the data of widget
          * 
          * @function
          * @memberOf tabledetail#
@@ -272,15 +265,11 @@
             this._table.dataTable().fnClearTable();
         },
         /**
-         * retrun the form object
-         * 
+         * get form objects array
          * @function
-         * 
          * @private
-         * 
          * @memberOf tabledetail#
-         * 
-         * @return {OBJECT} retrun the form object
+         * @return {OBJECT} retrun the form object array
          */
         _getFormObj : function() {
             var obj = {};

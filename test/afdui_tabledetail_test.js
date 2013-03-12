@@ -7,22 +7,22 @@
             "iDisplayLength" : 25,
             "bJQueryUI" : true,
             "aoColumns" : [ {
-                "sTitle" : "id",
+                "sTitle" : "ID",
                 "mData" : "id"
             }, {
-                "sTitle" : "name",
+                "sTitle" : "Name",
                 "mData" : "name"
             }, {
-                "sTitle" : "alias",
+                "sTitle" : "Alias",
                 "mData" : "alias"
             }, {
-                "sTitle" : "voltageLevel",
+                "sTitle" : "Voltage Level",
                 "mData" : "voltageLevel"
             } ]
         },
         "form" : {
             "pages" : [ {
-                "title" : "the baisc message",
+                "title" : "General Info",
                 "rows" : 2,
                 "cols" : 4,
                 "controls" : [ {
@@ -37,7 +37,7 @@
                         return '2400000';
                     }
                 }, {
-                    "label" : "name",
+                    "label" : "Name",
                     "id" : "name",
                     "type" : "input",
                     "format" : "text",
