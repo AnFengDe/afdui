@@ -127,6 +127,7 @@
             $('.ui-dialog').addClass('afdui-td');
             $('.ui-dialog-titlebar').addClass('afdui-td-titlebar');
 
+            //TODO:refactor less code for similar 
             this._btn_new = $('#detail_btn_new');
             this._btn_save = $('#detail_btn_save');
             this._btn_delete = $('#detail_btn_delete');
@@ -137,9 +138,8 @@
 
         },
         /**
-         * widget's methods
+         * destroy method
          * 
-         * @construct
          * @memberOf tabledetail#
          */
         destroy : function() {
@@ -151,6 +151,7 @@
             // clean the message of showing
             $('.ui-tooltip').remove();
             $('#tblDetailDialog').dialog('destroy').remove();
+            
             this._table.remove();
 
             $.ui.dialog.prototype.destroy.apply(this);
@@ -167,7 +168,7 @@
          */
         _setOption : function() {
             if (this.options.form === null && this.options.table === null) {
-                throw new Error('the table data or form data can\'t null in the option');
+                throw new Error('The table or form options must be set.');
             }
 
             this.options.table = $.extend({}, this._TABLE_DEFAULT, this.options.table);
@@ -183,11 +184,8 @@
          * @memberOf tabledetail#
          */
         _buildTable : function() {
-            var el = this.element;
-            var html = "<div id = \"tableDiv\"><table  cellpadding=\"0\" cellspacing=\"0\" border=\"0\" id=\"";
-            html += "dataTable\" width=\"100%\">";
-            html += "</table></div>";
-            $(html).appendTo(el);
+            var html = "<div id = \"tableDiv\"><table  cellpadding=\"0\" cellspacing=\"0\" border=\"0\" id=\"dataTable\" width=\"100%\"></table></div>";
+            $(html).appendTo(this.element);
             this._table = $('#dataTable');
             this._table.dataTable(this.options.table);
         },
