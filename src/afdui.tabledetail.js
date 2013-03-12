@@ -616,8 +616,8 @@
                     $("#detail_" + key).val(define);
                 }
             });
-            event.data._trigger('clickTr', null, {
-                thistr : this,
+            event.data._trigger('rowClick', null, {
+                current : this,
                 sorting_1 : $(this).find("td.sorting_1")
             });
         },
@@ -638,8 +638,8 @@
                 $(this).removeClass("hover");
                 $(this).find("td.sorting_1").removeClass("hover");
             }
-            event.data._trigger('hoverTr', event, {
-                thistr : this,
+            event.data._trigger('rowHover', event, {
+                current : this,
                 sorting_1 : $(this).find("td.sorting_1")
             });
         },
@@ -684,7 +684,7 @@
                 self._updateDataTableContents(self._selected_tr, id, inputself.value);
             }
 
-            $('#form_message').hide().html('正在保存....').slideDown(3000, function() {
+            $('#form_message').hide().html('Saving...').slideDown(3000, function() {
                 $(this).hide();
             });
         },

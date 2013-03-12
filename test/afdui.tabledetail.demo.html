@@ -81,7 +81,7 @@
 								"customData" : function() {
 									return '2400000';
 								},
-								"message" : "The length between in 1 - 32"
+								"message" : "Name length between in 1 - 32"
 							}, {
 								"label" : "Alias",
 								"id" : "alias",
@@ -139,16 +139,16 @@
 							}]
 						}]
 					},
-					"hoverTr" : function(e, ui) {
+					"rowHover" : function(e, data) {
 						if (e.handleObj.origType === "mouseenter") {
-							ui.thistr.style.color = 'red';
+							data.current.style.color = 'red';
 						} else {
-							ui.thistr.style.color = 'black';
+							data.current.style.color = 'black';
 						}
 
 					},
-					"clickTr" : function(e, ui) {
-						ui.thistr.style.color = 'black';
+					"rowClick" : function(e, data) {
+						data.current.style.color = 'black';
 					},
 					//custom event function have a event args,but others don't have
 					"formValidator" : function(obj) {

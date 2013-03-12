@@ -1,16 +1,4 @@
 (function($) {
-    /*
-     * ======== A Handy Little QUnit Reference ======== http://api.qunitjs.com/
-     * 
-     * Test methods: module(name, {[setup][ ,teardown]}) test(name, callback)
-     * expect(numberOfAssertions) stop(increment) start(decrement) Test
-     * assertions: ok(value, [message]) equal(actual, expected, [message])
-     * notEqual(actual, expected, [message]) deepEqual(actual, expected,
-     * [message]) notDeepEqual(actual, expected, [message]) strictEqual(actual,
-     * expected, [message]) notStrictEqual(actual, expected, [message])
-     * throws(block, [expected], [message])
-     */
-
     var testOptions = {
         "width" : 800,
         "height" : 540,
@@ -137,8 +125,8 @@
             });
             $("#returnDialog").dialog('open');
         },
-        "delErrorMsg" : function(e, ui) {
-            var html = '<div id = returnDialog><p>' + ui + '</p></div>';
+        "delErrorMsg" : function(e, data) {
+            var html = '<div id = returnDialog><p>' + data + '</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
                 close : function() {
@@ -157,8 +145,8 @@
             });
             $("#returnDialog").dialog('open');
         },
-        "selectChange" : function(e, ui) {
-            var html = '<div id = returnDialog><p>' + ui + '</p></div>';
+        "selectChange" : function(e, data) {
+            var html = '<div id = returnDialog><p>' + data + '</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
                 close : function() {
@@ -167,15 +155,15 @@
             });
             $("#returnDialog").dialog('open');
         },
-        "hoverTr" : function(e, ui) {
+        "rowHover" : function(e, data) {
             if (e.handleObj.origType === "mouseenter") {
-                ui.thistr.style.color = 'red';
+                data.current.style.color = 'red';
             } else {
-                ui.thistr.style.color = 'black';
+                data.current.style.color = 'black';
             }
         },
-        "clickTr" : function(e, ui) {
-            ui.thistr.style.color = 'blue';
+        "rowClick" : function(e, data) {
+            data.current.style.color = 'blue';
         },
         "formValidator" : function(obj) {
             if ((obj.id.value === obj.name.value) && (obj.id.value.length !== 0 && obj.name.value.length !== 0)) {
@@ -201,8 +189,11 @@
     module('afd Table Detail options testsuite');
     test('test the table and form data is null in options', function() {
         raises(function() {
-            $('#tblDetail').tabledetail({"width" : "800", "height" : "600"});
-                },Error,"Must throw error to pass") ;
+            $('#tblDetail').tabledetail({
+                "width" : "800",
+                "height" : "600"
+            });
+        }, Error, "Must throw error to pass");
     });
 
     var tdLoadInit = function(data) {

@@ -15,9 +15,11 @@
   "es5": true,
   "predef": [
     "ok",
+    "test",
     "jQuery",
     "asyncTest",
     "start",
+    "raises",
     "stop"
     ]
 }
