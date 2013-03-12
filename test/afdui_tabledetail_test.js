@@ -176,16 +176,41 @@
         },
         "clickTr" : function(e, ui) {
             ui.thistr.style.color = 'blue';
+        },
+        "formValidator" : function(obj) {
+            if ((obj.id.value === obj.name.value) && (obj.id.value.length !== 0 && obj.name.value.length !== 0)) {
+                return 'the values of id is can\'t the same as the values of name!';
+            }
+        },
+        "fieldValidator" : function(data) {
+            for ( var i = 0; i < data.length; i++) {
+                for ( var j = i + 1; j < data.length; j++) {
+                    if (data[i].id === data[j].id) {
+                        return 'can\'t the repeat id!' + data[i].id;
+                    }
+                }
+            }
+        },
+        "remoteAjax" : {
+            "create" : "/powerflow/api/config/devices/buses/new",
+            "edit" : "/powerflow/api/config/devices/buses/_name_",
+            "remove" : "/powerflow/api/config/devices/buses/_id_"
         }
     };
+
+    module('afd Table Detail options testsuite');
+    test('test the table and form data is null in options', function() {
+        raises(function() {
+            $('#tblDetail').tabledetail({"width" : "800", "height" : "600"});
+                },Error,"Must throw error to pass") ;
+    });
 
     var tdLoadInit = function(data) {
         var td = $('#tblDetail').tabledetail(testOptions);
         td.tabledetail('addData', data);
         return td;
     };
-    
-    module('afd Table Detail options testsuite');
+
     asyncTest('test the page basic value', function() {
         $.when($.ajax({
             url : "info_line.json",
@@ -402,10 +427,11 @@
         })).done(function(data) {
             // deletedata
             var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
-            td.tabledetail("remoteAjax", {
-                "create" : "/powerflow/api/config/devices/buses/new",
-                "edit" : "/powerflow/api/config/devices/buses/_name_",
-                "remove" : "/powerflow/api/config/devices/buses/_id_"
+            var id = $.mockjax({
+                url : "/powerflow/api/config/devices/buses/240000001",
+                responseText : {
+                    status : 'success'
+                }
             });
 
             // select one data，checked the function of deleter is valid
@@ -421,6 +447,7 @@
 
                 $('#returnDialog').dialog('destroy').remove();
                 td.tabledetail("destroy");
+                $.mockjaxClear(id);
                 start();
             }, 1000);
         }).fail(function() {
@@ -435,12 +462,6 @@
             dataType : "json"
         })).done(function(data) {
             var td = tdLoadInit(data);
-
-            td.tabledetail("remoteAjax", {
-                "create" : "/powerflow/api/config/devices/buses/new",
-                "edit" : "/powerflow/api/config/devices/buses/_name_",
-                "remove" : "/powerflow/api/config/devices/buses/_id_"
-            });
 
             ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'deletebutton is disabled');
 
@@ -548,10 +569,6 @@
         })).done(function(data) {
             var td = tdLoadInit(data);
 
-            td.tabledetail("remoteAjax", {
-                "remove" : "/powerflow/api/config/devices/buses/_id_"
-            });
-
             var id = $.mockjax({
                 url : "/powerflow/api/config/devices/buses/240000011",
                 status : 500
@@ -582,12 +599,8 @@
         })).done(function(data) {
             var td = tdLoadInit(data);
 
-            td.tabledetail("remoteAjax", {
-                "edit" : "/powerflow/api/config/devices/buses/_id_"
-            });
-
             var id = $.mockjax({
-                url : "/powerflow/api/config/devices/buses/240000009",
+                url : "/powerflow/api/config/devices/buses/hefeiTransform",
                 responseText : {
                     status : 'success'
                 }
@@ -619,10 +632,6 @@
             dataType : "json"
         })).done(function(data) {
             var td = tdLoadInit(data);
-
-            td.tabledetail("remoteAjax", {
-                "create" : "/powerflow/api/config/devices/buses/new"
-            });
 
             var id = $.mockjax({
                 url : "/powerflow/api/config/devices/buses/new",
@@ -708,9 +717,6 @@
                         .done(
                                 function(data) {
                                     var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
-                                    td.tabledetail("remoteAjax", {
-                                        "remove" : "/powerflow/api/config/devices/buses/_id_"
-                                    });
                                     var remoteRet = false;
                                     var id = $
                                             .mockjax(function(settings) {
@@ -748,20 +754,16 @@
                         }))
                         .done(
                                 function(data) {
-                                    var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
+                                    var td = tdLoadInit(data), tb = $('#dataTable').dataTable(), remoteRet = false;
 
-                                    td.tabledetail("remoteAjax", {
-                                        "edit" : "/powerflow/api/config/devices/buses/_id_"
-                                    });
-                                    var remoteRet = false;
                                     var id = $
                                             .mockjax(function(settings) {
-                                                remoteRet = ((settings.type === 'PUT') && (settings.url === '/powerflow/api/config/devices/buses/240000003')) ? true
+                                                remoteRet = ((settings.type === 'PUT') && (settings.url === '/powerflow/api/config/devices/buses/hefeiTransformed')) ? true
                                                         : false;
                                             });
 
                                     $('#tblDetail tr :eq(3)').trigger('click');
-                                    $('#detail_name').val('the transformed of hefei').trigger('change');
+                                    $('#detail_name').val('hefeiTransformed').trigger('change');
 
                                     $('#detail_btn_save').trigger('click');
                                     setTimeout(function() {
@@ -795,9 +797,6 @@
                                     var td = $('#tblDetail').tabledetail(testOptions);
                                     td.tabledetail('addData', data);
                                     var tb = $('#dataTable').dataTable();
-                                    td.tabledetail("remoteAjax", {
-                                        "create" : "/powerflow/api/config/devices/buses/new"
-                                    });
                                     var remoteRet = false;
                                     var id = $
                                             .mockjax(function(settings) {
@@ -843,16 +842,12 @@
                                     var td = $('#tblDetail').tabledetail(testOptions);
                                     td.tabledetail('addData', data);
                                     var tb = $('#dataTable').dataTable();
-                                    td.tabledetail("remoteAjax", {
-                                        "create" : "/powerflow/api/config/devices/buses/new",
-                                        "edit" : "/powerflow/api/config/devices/buses/_id_"
-                                    });
 
                                     var remoteRet = [];
                                     var id = $
                                             .mockjax(function(settings) {
                                                 if (((settings.type === 'POST') && (settings.url === '/powerflow/api/config/devices/buses/new'))
-                                                        || ((settings.type === 'PUT') && (settings.url === '/powerflow/api/config/devices/buses/240000005'))) {
+                                                        || ((settings.type === 'PUT') && (settings.url === '/powerflow/api/config/devices/buses/huaibeiTransformed'))) {
                                                     remoteRet.push(true);
                                                 } else {
                                                     remoteRet.push(false);
@@ -861,11 +856,11 @@
 
                                     // modified the value of fifth tr data
                                     $('#tblDetail tr :eq(5)').trigger('click');
-                                    $('#detail_name').val('the transform of hefei').trigger('change');
+                                    $('#detail_name').val('huaibeiTransformed').trigger('change');
                                     // add a new tr
                                     $('#detail_btn_new').trigger('click');
                                     $('#detail_id').val('240000002').trigger('change');
-                                    $('#detail_name').val('the transform of hefei').trigger('change');
+                                    $('#detail_name').val('hefeiTransformed').trigger('change');
                                     // click the save button
                                     $('#detail_btn_save').trigger('click');
 
