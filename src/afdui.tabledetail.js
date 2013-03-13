@@ -332,7 +332,7 @@
                         }
                     });
                     if ($('.afdui-td-input')[0].disabled === true) {
-                        $('#tblDetailDialog p')[0].innerHTML = "数据不符合要求，请联系管理员修改";
+                        $('#tblDetailDialog p')[0].innerHTML = "the JSON Data is wrong.";
                         $('#tblDetailDialog').dialog();
                     } else {
                         $('#tblDetailDialog p')[0].innerHTML = this.options.fieldValidator(this.getData());
@@ -420,7 +420,7 @@
             return (typeof msg === 'undefined') ? '' : 'title="' + msg + '"';
         },
         /**
-         * create the html of input生成输入框的HTML
+         * create the html of input
          * 
          * @private
          * @function
@@ -532,11 +532,11 @@
                 this._btn_delete.button('enable');
             }
             if (status === 'inputchange') {
-                // this._btn_new.button('disable');
+                this._btn_new.button('enable');
                 this._btn_save.button('enable');
             }
             if (status === 'new') {
-                // this._btn_new.button('disable');
+                this._btn_new.button('disable');
                 this._btn_save.button('enable');
                 this._btn_delete.button('enable');
             }
@@ -580,6 +580,9 @@
             var self = event.data;
             if (self._validateForm() === false || self._tableDataIsRight() === false
                     || null === self._table.dataTable().fnGetData(this)) {
+                return;
+            }
+            if(self._table.find("tr.clickedtr.noneEdit").length){
                 return;
             }
             // modified the css of table
@@ -645,6 +648,7 @@
         _handle_input_change : function(event) {
             var self = event.data;
             self._setDetailStatus('inputchange');
+            self._table.find('.noneEdit').removeClass('noneEdit');
             var id = this.id.slice(7, this.id.length);
             // validator...
             var obj = self._searchInputById(id);
@@ -697,7 +701,7 @@
             $.each(self.options.table.aoColumns, function(index, value) {
                 data[value.mData] = "";
             });
-            $(self._table.dataTable().fnAddDataAndDisplay(data).nTr).addClass('newTr').trigger('click');
+            $(self._table.dataTable().fnAddDataAndDisplay(data).nTr).addClass('newTr').addClass('noneEdit').trigger('click');
             self._setDetailStatus("new");
             $.each(self.options.form.pages, function(i) {
                 $.each(self.options.form.pages[i].controls, function(j, val) {
