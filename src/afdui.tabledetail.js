@@ -127,7 +127,7 @@
             $('.ui-dialog').addClass('afdui-td');
             $('.ui-dialog-titlebar').addClass('afdui-td-titlebar');
 
-            //TODO:refactor less code for similar 
+            // TODO:refactor less code for similar
             this._btn_new = $('#detail_btn_new');
             this._btn_save = $('#detail_btn_save');
             this._btn_delete = $('#detail_btn_delete');
@@ -151,7 +151,7 @@
             // clean the message of showing
             $('.ui-tooltip').remove();
             $('#tblDetailDialog').dialog('destroy').remove();
-            
+
             this._table.remove();
 
             $.ui.dialog.prototype.destroy.apply(this);
@@ -176,12 +176,14 @@
         },
         /**
          * create html table tag
+         * 
          * @private
          * @function
          * @memberOf tabledetail#
          */
         _buildTable : function() {
-            var html = "<div id = \"tableDiv\"><table  cellpadding=\"0\" cellspacing=\"0\" border=\"0\" id=\"dataTable\" width=\"100%\"></table></div>";
+            var html = '<div id="tableDiv"><table cellpadding="0" cellspacing="0" ';
+            html += 'border="0" id="dataTable" width=\"100%\"></table></div>';
             $(html).appendTo(this.element);
             this._table = $('#dataTable');
             this._table.dataTable(this.options.table);
@@ -191,7 +193,8 @@
          * 
          * @function
          * @memberOf tabledetail#
-         * @param {JSON} raw raw data
+         * @param {JSON}
+         *            raw raw data
          * @return {JSON} the changed raw data contain display string
          */
         _raw2display : function(raw) {
@@ -214,23 +217,23 @@
          */
         _display2raw : function(display) {
             var self = this;
+            if (self._code === undefined) {
+                return display;
+            }
             var temp = JSON.stringify(display);
             var raw = JSON.parse(temp);
-            if (self._code !== undefined) {
-                $.each(display, function(index, value) {
-                    $.each(self._code, function(code, define) {
-                        if (value[code] === undefined) {
-                            return false;
+            $.each(display, function(index, value) {
+                $.each(self._code, function(code, define) {
+                    if (value[code] === undefined) {
+                        return;
+                    }
+                    $.each(define, function(key, name) {
+                        if (value[code] === name) {
+                            raw[index][code] = key;
                         }
-                        $.each(define, function(key, name) {
-                            if (value[code] === name) {
-                                raw[index][code] = key;
-                                return false;
-                            }
-                        });
                     });
                 });
-            }
+            });
             return raw;
         },
         /**
@@ -266,6 +269,7 @@
         },
         /**
          * get form objects array
+         * 
          * @function
          * @private
          * @memberOf tabledetail#
@@ -287,24 +291,26 @@
          * 
          * @memberOf tabledetail#
          */
-        _formDataIsRight : function() {
-            if (typeof this.options.formValidator === 'function') {
-                if (typeof this.options.formValidator(this._getFormObj()) === 'string') {
-                    var html = '<div id = tblDetailDialog><p></p></div>';
+        _validateForm : function() {
+            if (typeof this.options.formValidator === 'function' && $('.afdui-td-input')[0].disabled === false) {
+                var msg = this.options.formValidator(this._getFormObj());
+                if (typeof msg === 'string') {
+                    var html = '<div id = tblDetailDialog>' + msg + '</div>';
                     $(html).appendTo(this.element);
                     $("#tblDetailDialog").dialog({
-                        autoOpen : false,
+                        autoOpen : true,
+                        modal : true,
+                        title : 'Form validate failure',
+                        dialogClass : "alert",
+                        resizable : false,
                         close : function() {
                             $(this).dialog('destroy').remove();
                         }
                     });
-                    if ($('.afdui-td-input')[0].disabled === false) {
-                        $('#tblDetailDialog p')[0].innerHTML = this.options.formValidator(this._getFormObj());
-                        $('#tblDetailDialog').dialog("open");
-                        return false;
-                    }
+                    return false;
                 }
             }
+            return true;
         },
         /**
          * Judging table in the content complies with the combination of the
@@ -572,13 +578,8 @@
          */
         _handle_tr_click : function(event) {
             var self = event.data;
-            if (self._formDataIsRight() === false) {
-                return;
-            }
-            if (self._tableDataIsRight() === false) {
-                return;
-            }
-            if (null === self._table.dataTable().fnGetData(this)) {
+            if (self._validateForm() === false || self._tableDataIsRight() === false
+                    || null === self._table.dataTable().fnGetData(this)) {
                 return;
             }
             // modified the css of table
@@ -688,10 +689,7 @@
          */
         _handle_btn_new : function(event) {
             var self = event.data;
-            if (self._formDataIsRight() === false) {
-                return;
-            }
-            if (self._tableDataIsRight() === false) {
+            if (self._validateForm() === false || self._tableDataIsRight() === false) {
                 return;
             }
             // new a null data
@@ -723,10 +721,7 @@
          */
         _handle_btn_save : function(event) {
             var self = event.data;
-            if (self._formDataIsRight() === false) {
-                return;
-            }
-            if (self._tableDataIsRight() === false) {
+            if (self._validateForm() === false || self._tableDataIsRight() === false) {
                 return;
             }
             var td = self._table.dataTable();
@@ -787,7 +782,7 @@
          */
         _handle_btn_close : function(event) {
             var self = event.data;
-            if (self._formDataIsRight() === false) {
+            if (self._validateForm() === false) {
                 return;
             }
             if (self._saveMessage() === false) {
