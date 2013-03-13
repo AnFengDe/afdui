@@ -175,10 +175,7 @@
             this.options.buttons = $.extend({}, this.options.buttons, this._BUTTON_DEFAULT);
         },
         /**
-         * create the table which the id is dataTbale,and create the div which
-         * the id is tableDiv
-         * <li>this function not accept any parameter</li>
-         * 
+         * create html table tag
          * @private
          * @function
          * @memberOf tabledetail#
@@ -190,16 +187,15 @@
             this._table.dataTable(this.options.table);
         },
         /**
-         * conversion raw data according to code
+         * conversion raw code to display string
          * 
          * @function
          * @memberOf tabledetail#
-         * @param {JSON}
-         * @return {JSON}
+         * @param {JSON} raw raw data
+         * @return {JSON} the changed raw data contain display string
          */
         _raw2display : function(raw) {
-            var self = this;
-            $.each(self._code, function(key, define) {
+            $.each(this._code, function(key, define) {
                 $.each(raw, function(index, value) {
                     value[key] = define[value[key]];
                 });
@@ -207,14 +203,14 @@
             return raw;
         },
         /**
-         * conversion display data according to code
+         * conversion display string to raw code
          * 
          * @function
          * @private
          * @memberOf tabledetail#
          * @param {JSON}
-         *            json object
-         * @return {JSON} retrun object
+         *            display display string
+         * @return {JSON} retrun raw data code
          */
         _display2raw : function(display) {
             var self = this;
@@ -238,30 +234,29 @@
             return raw;
         },
         /**
-         * addData,it's can be obj or array
+         * add data to widget, must be json object or json object array
          * 
          * @function
          * @private
          * @memberOf tabledetail#
          * @param {JSON|ARRAY}
-         *            data jsonobj or json array
+         *            data json object or json object array
          */
         addData : function(data) {
-            var display = this._raw2display(data);
-            this._table.dataTable().fnAddData(display);
+            this._table.dataTable().fnAddData(this._raw2display(data));
         },
         /**
-         * get the data of table
+         * get the data of widget
          * 
          * @function
          * @memberOf tabledetail#
-         * @return {ARRAY} data json obj data
+         * @return {ARRAY} data json object data or json object array
          */
         getData : function() {
             return this._display2raw(this._table.fnGetData());
         },
         /**
-         * clean the data of table
+         * clean the data of widget
          * 
          * @function
          * @memberOf tabledetail#
@@ -270,15 +265,11 @@
             this._table.dataTable().fnClearTable();
         },
         /**
-         * retrun the form object
-         * 
+         * get form objects array
          * @function
-         * 
          * @private
-         * 
          * @memberOf tabledetail#
-         * 
-         * @return {OBJECT} retrun the form object
+         * @return {OBJECT} retrun the form object array
          */
         _getFormObj : function() {
             var obj = {};
