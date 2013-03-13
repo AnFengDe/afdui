@@ -523,33 +523,33 @@
         _setDetailStatus : function(status) {
             if (status === 'init') {
                 this._tabs.find('.afdui-td-input').attr('disabled', true);
-                this._btn_new.button('enable');
+                this._btn_new.button('enable').removeClass('ui-state-focus');
                 this._btn_save.button('disable');
                 this._btn_delete.button('disable');
-                this._btn_close.button('enable');
+                this._btn_close.button('enable').removeClass('ui-state-focus');
             }
             if (status === 'trclick') {
-                this._btn_delete.button('enable');
+                this._btn_delete.button('enable').removeClass('ui-state-focus');
             }
             if (status === 'inputchange') {
-                this._btn_new.button('enable');
-                this._btn_save.button('enable');
+                this._btn_new.button('enable').removeClass('ui-state-focus');
+                this._btn_save.button('enable').removeClass('ui-state-focus');
             }
             if (status === 'new') {
                 this._btn_new.button('disable');
-                this._btn_save.button('enable');
-                this._btn_delete.button('enable');
+                this._btn_save.button('enable').removeClass('ui-state-focus');
+                this._btn_delete.button('enable').removeClass('ui-state-focus');
             }
             if (status === 'save') {
-                this._btn_new.button('enable');
+                this._btn_new.button('enable').removeClass('ui-state-focus');
                 this._btn_save.button('disable');
-                this._btn_delete.button('enable');
+                this._btn_delete.button('enable').removeClass('ui-state-focus');
             }
             if (status === 'delete') {
-                this._btn_new.button('enable');
+                this._btn_new.button('enable').removeClass('ui-state-focus');
                 this._btn_save.button('disable');
                 this._btn_delete.button('disable');
-                this._btn_close.button('enable');
+                this._btn_close.button('enable').removeClass('ui-state-focus');
             }
         },
         /**
