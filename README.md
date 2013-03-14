@@ -1,17 +1,11 @@
-<<<<<<< HEAD
 JQuery UI TableDetail Widget
 ============================
-=======
-	JQuery UI TableDetail Widget
-====================================
->>>>>>> master
 
 JQuery UI TableDetail Widget displays JSON data on the Dialog Widget of JQuery UI in JQuery's form and DataTable.
 
 How to build your own JQuery UI TableDetail Widget
 ---------------------------------------------------
 ####First，clone  a copy of main JQuery git repo by running : 
-<<<<<<< HEAD
 ``
 git clone git://github.com/AnFengDe/afdui.git
 ``
@@ -35,40 +29,11 @@ grunt -version
 `` 
 grunt/grunt watch
 ``
-=======
-`` `
-git clone git://github.com/AnFengDe/afdui.git
-` ``
-
-####Install the grunt-cli package so that you will have the correct version of grunt available from any project that needs it. This should be done as a global install:
-`` `
-npm install -g grunt-cli
-` ``
-
-####Enter the jquery directory and install the Node dependencies, this time without specifying a global install:
-`` `
-cd jquery && npm install
-` ``
-
-####Make sure you have grunt installed by testing:
-`` `
-grunt -version
-` ``
-
-####Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery UI TableDeatail Widget, type the following:
-`` `
-grunt/grunt watch
-` ``
->>>>>>> master
 
 Getting Started
 ----------------
 ####Include jQuery,JQuery UI and the widget on a page, Then select a div to show deatail and call the tabledetail method.
-<<<<<<< HEAD
 `` 
-=======
-`` `bash
->>>>>>> master
 <script src="jquery.js"></script>
 <script src="jquery-ui.js"></script>
 <script src="tabledetail.js"></script>
@@ -76,24 +41,14 @@ Getting Started
 <script type = "text/javascript">
 $("divid").tabledetail(options);
 </script>
-<<<<<<< HEAD
 ``
-=======
-` ``
->>>>>>> master
 API
 ---------------
 ###tableDetail consists of three methods, one to set up tableDetail, one to add Json data, one to get data form object from tabledetail, one to remove them.You'll find plenty of examples below. If you're looking for a specific option, checkout this list:
 
-<<<<<<< HEAD
 > **$('divid').tabledetail(options);** : create a tabledetail on the Dialog.
 >
 > **options**: 
-=======
-**$('divid').tabledetail(options);**
-create a tabledetail on the Dialog.
-options: 
->>>>>>> master
 
 - **width**: the form width
 - **height**: the form height
