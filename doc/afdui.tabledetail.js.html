@@ -1,4 +1,31 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: afdui.tabledetail.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: afdui.tabledetail.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/**
  * @fileoverview afdui.tabledetail widget
  * @author chtian@anfengde.com
  * @author afd.zwhu@gmail.com
@@ -122,7 +149,7 @@
             this._buildDetailForm();
 
             // add the span of message
-            $('.ui-dialog-buttonpane').prepend('<span id="form_message"></span>');
+            $('.ui-dialog-buttonpane').prepend('&lt;span id="form_message">&lt;/span>');
 
             $('.ui-dialog').addClass('afdui-td');
             $('.ui-dialog-titlebar').addClass('afdui-td-titlebar');
@@ -160,7 +187,7 @@
 
         /**
          * initialize options，expand support the layer option
-         * <li>this function not accept any parameter</li>
+         * &lt;li>this function not accept any parameter&lt;/li>
          * 
          * @private
          * @function
@@ -181,8 +208,8 @@
          * @memberOf tabledetail#
          */
         _buildTable : function() {
-            var html = '<div id="tableDiv"><table cellpadding="0" cellspacing="0" ';
-            html += 'border="0" id="dataTable" width=\"100%\"></table></div>';
+            var html = '&lt;div id="tableDiv">&lt;table cellpadding="0" cellspacing="0" ';
+            html += 'border="0" id="dataTable" width=\"100%\">&lt;/table>&lt;/div>';
             $(html).appendTo(this.element);
             this._table = $('#dataTable');
             this._table.dataTable(this.options.table);
@@ -294,7 +321,7 @@
             if (typeof this.options.formValidator === 'function' && $('.afdui-td-input')[0].disabled === false) {
                 var msg = this.options.formValidator(this._getFormObj());
                 if (typeof msg === 'string') {
-                    var html = '<div id = tblDetailDialog>' + msg + '</div>';
+                    var html = '&lt;div id = tblDetailDialog>' + msg + '&lt;/div>';
                     $(html).appendTo(this.element);
                     $("#tblDetailDialog").dialog({
                         autoOpen : true,
@@ -323,7 +350,7 @@
         _tableDataIsRight : function() {
             if (typeof this.options.fieldValidator === 'function') {
                 if (typeof this.options.fieldValidator(this.getData()) === 'string') {
-                    var html = '<div id = "tblDetailDialog"><p></p></div>';
+                    var html = '&lt;div id = "tblDetailDialog">&lt;p>&lt;/p>&lt;/div>';
                     $(html).appendTo(this.element);
                     $("#tblDetailDialog").dialog({
                         close : function() {
@@ -350,7 +377,7 @@
          */
         _buildDetailForm : function() {
             var self = this;
-            var html = '<div id="detailTabs" class="afdui-td-detailTabs">';
+            var html = '&lt;div id="detailTabs" class="afdui-td-detailTabs">';
             var tabHeaders = [];
             var tabBodies = [];
             this._maskList = [];
@@ -358,7 +385,7 @@
                 tabHeaders.push(self._buildTabHolder(index, value));
                 tabBodies.push(self._buildTabBody(index, value));
             });
-            html = html + '<ul>' + tabHeaders.join('') + '</ul>' + tabBodies.join('') + '</div>';
+            html = html + '&lt;ul>' + tabHeaders.join('') + '&lt;/ul>' + tabBodies.join('') + '&lt;/div>';
             var detailTabs = $(html);
             detailTabs.appendTo(self.element).tabs();
             $('[title]').tooltip();
@@ -380,7 +407,7 @@
             if (typeof page.title === "undefined") {
                 page.title = index;
             }
-            return '<li><a href="#detailTab' + index + '">' + page.title + '</a></li>';
+            return '&lt;li>&lt;a href="#detailTab' + index + '">' + page.title + '&lt;/a>&lt;/li>';
         },
         /**
          * create the detail form tab content area
@@ -394,7 +421,7 @@
          * @memberOf tabledetail#
          */
         _buildTabBody : function(index, page) {
-            return '<div id="detailTab' + index + '">' + this._buildPage(page) + '</div>';
+            return '&lt;div id="detailTab' + index + '">' + this._buildPage(page) + '&lt;/div>';
         },
         /**
          * create the input mask defined project object
@@ -444,14 +471,14 @@
                         "mask" : input.mask
                     });
                 }
-                return '<input id="detail_' + input.id + '" class="afdui-td-input" type="' + input.format + '" maxlength="'
+                return '&lt;input id="detail_' + input.id + '" class="afdui-td-input" type="' + input.format + '" maxlength="'
                         + input.maxlength + '" size="' + input.size + '" ' + (input.readonly ? 'readonly ' : '')
                         + this._buildInputMessage(input.message) + '>';
             }
             if ("select" === input.type) {
-                // <select><option>..</option></select>
+                // &lt;select>&lt;option>..&lt;/option>&lt;/select>
                 var select = [];
-                select.push('<select id="detail_' + input.id + '" class="afdui-td-input">');
+                select.push('&lt;select id="detail_' + input.id + '" class="afdui-td-input">');
                 var options = [];
                 if ($.isArray(input.options)) {
                     options = input.options;
@@ -479,9 +506,9 @@
                             self._code[input.id][value.id] = value.name;
                         }
                     });
-                    select.push('<option value="' + value.id + '">' + value.name + "</option>");
+                    select.push('&lt;option value="' + value.id + '">' + value.name + "&lt;/option>");
                 });
-                select.push('</select>');
+                select.push('&lt;/select>');
                 return select.join('');
             }
         },
@@ -497,20 +524,20 @@
             var i = 0, j = 0;
             var rows = (typeof page.rows === 'number') ? page.rows : parseInt(page.rows, 10);
             var cols = (typeof page.cols === 'number') ? page.cols / 2 : parseInt(page.cols, 10) / 2;
-            // <tr><td>..</td>....</tr>
-            for (i = 0; i < rows; i++) {
-                detailFields.push('<tr>');
-                for (j = 0; j < cols; j++) {
-                    detailFields.push('<td align="right">');
+            // &lt;tr>&lt;td>..&lt;/td>....&lt;/tr>
+            for (i = 0; i &lt; rows; i++) {
+                detailFields.push('&lt;tr>');
+                for (j = 0; j &lt; cols; j++) {
+                    detailFields.push('&lt;td align="right">');
                     detailFields.push(page.controls[i * cols + j].label);
-                    detailFields.push('</td>');
-                    detailFields.push('<td>');
+                    detailFields.push('&lt;/td>');
+                    detailFields.push('&lt;td>');
                     detailFields.push(this._buildInput(page.controls[i * cols + j]));
-                    detailFields.push('</td>');
+                    detailFields.push('&lt;/td>');
                 }
-                detailFields.push('</tr>');
+                detailFields.push('&lt;/tr>');
             }
-            return '<table width="100%"><tbody>' + detailFields.join('') + '</tbody></table>';
+            return '&lt;table width="100%">&lt;tbody>' + detailFields.join('') + '&lt;/tbody>&lt;/table>';
         },
         /**
          * setting the status of controls in detail form
@@ -997,3 +1024,25 @@
         }
     });
 }(jQuery));
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="tabledetail.html">tabledetail</a></li></ul><h3>Namespaces</h3><ul><li><a href="afdui.tabledetail.html">tabledetail</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_BUTTON_DEFAULT">_BUTTON_DEFAULT</a></li><li><a href="global.html#_TABLE_DEFAULT">_TABLE_DEFAULT</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#tableDetailButtons">tableDetailButtons</a></li><li><a href="global.html#tableDetailOptions">tableDetailOptions</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.1.1</a> on Thu Mar 14 2013 16:50:25 GMT+0800 (CST)
+</footer>
+
+<script> prettyPrint(); </script>
+</body>
+</html>
