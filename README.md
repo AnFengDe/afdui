@@ -80,7 +80,6 @@ tableDetail consists of three methods, one to set up tableDetail, one to add Jso
 - **hoverTr**: custom event for table's tr of hover
 - **clickTr**: custom event for table's tr of click
 - **formValidator**: custom function for validating form
-- **fieldValidator**: custom function for validating table tr's field
 - **remoteAjax**:  remote data sending to server by REST
    - **create**: put data to server
    - **edit**: post data to server

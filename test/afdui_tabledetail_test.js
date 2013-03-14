@@ -170,15 +170,6 @@
                 return 'the values of id is can\'t the same as the values of name!';
             }
         },
-        "fieldValidator" : function(data) {
-            for ( var i = 0; i < data.length; i++) {
-                for ( var j = i + 1; j < data.length; j++) {
-                    if (data[i].id === data[j].id) {
-                        return 'can\'t the repeat id!' + data[i].id;
-                    }
-                }
-            }
-        },
         "remoteAjax" : {
             "create" : "/powerflow/api/config/devices/buses/new",
             "edit" : "/powerflow/api/config/devices/buses/_name_",

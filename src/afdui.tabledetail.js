@@ -106,7 +106,6 @@
             table : null,
             form : null,
             formValidator : null,
-            fieldValidator : null,
             remoteAjax : null,
         },
         /**
@@ -151,7 +150,7 @@
             // clean the message of showing
             $('.ui-tooltip').remove();
             $('#tblDetailDialog').dialog('destroy').remove();
-            
+
             this._table.remove();
 
             $.ui.dialog.prototype.destroy.apply(this);
@@ -176,6 +175,7 @@
         },
         /**
          * create html table tag
+         * 
          * @private
          * @function
          * @memberOf tabledetail#
@@ -310,36 +310,6 @@
                 }
             }
             return true;
-        },
-        /**
-         * Judging table in the content complies with the combination of the
-         * overall table validation
-         * 
-         * @function
-         * @private
-         * 
-         * @memberOf tabledetail#
-         */
-        _tableDataIsRight : function() {
-            if (typeof this.options.fieldValidator === 'function') {
-                if (typeof this.options.fieldValidator(this.getData()) === 'string') {
-                    var html = '<div id = "tblDetailDialog"><p></p></div>';
-                    $(html).appendTo(this.element);
-                    $("#tblDetailDialog").dialog({
-                        close : function() {
-                            $(this).dialog('destroy').remove();
-                        }
-                    });
-                    if ($('.afdui-td-input')[0].disabled === true) {
-                        $('#tblDetailDialog p')[0].innerHTML = "the JSON Data is wrong.";
-                        $('#tblDetailDialog').dialog();
-                    } else {
-                        $('#tblDetailDialog p')[0].innerHTML = this.options.fieldValidator(this.getData());
-                        $('#tblDetailDialog').dialog();
-                    }
-                    return false;
-                }
-            }
         },
         /**
          * create the detail form pages
@@ -577,17 +547,16 @@
          */
         _handle_tr_click : function(event) {
             var self = event.data;
-            if (self._validateForm() === false || self._tableDataIsRight() === false
-                    || null === self._table.dataTable().fnGetData(this)) {
+            if (self._validateForm() === false || null === self._table.dataTable().fnGetData(this)) {
                 return;
             }
-            if(self._table.find("tr.clickedtr.noneEdit").length){
+            if (self._table.find("tr.clickedtr.noneEdit").length) {
                 return;
             }
-            if($('tr.clickedtr.noneEdit').length) {
+            if ($('tr.clickedtr.noneEdit').length) {
                 return;
             }
-            
+
             // modified the css of table
             self._tabs.find('.afdui-td-input').removeAttr('disabled');
             self._table.find("tr.clickedtr").removeClass("clickedtr");
@@ -668,7 +637,7 @@
                 $('#' + this.id).removeClass('ui-state-error');
             }
             $(this).addClass('changeInput');
-            
+
             $('tr.clickedtr.newTr.noneEdit').removeClass('noneEdit');
 
             var inputself = this;
@@ -698,7 +667,7 @@
          */
         _handle_btn_new : function(event) {
             var self = event.data;
-            if (self._validateForm() === false || self._tableDataIsRight() === false) {
+            if (self._validateForm() === false) {
                 return;
             }
             // new a null data
@@ -730,7 +699,7 @@
          */
         _handle_btn_save : function(event) {
             var self = event.data;
-            if (self._validateForm() === false || self._tableDataIsRight() === false) {
+            if (self._validateForm() === false) {
                 return;
             }
             var td = self._table.dataTable();
