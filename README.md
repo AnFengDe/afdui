@@ -94,5 +94,7 @@ other method:
 
     $('divid').tabledetail("destroy"): destroy element of tabledetail. 
 
+
+
 For more information on how to use tabledetail widget, check the documentation or demo.
 
