@@ -727,7 +727,7 @@
             self._setDetailStatus("new");
         },
         /**
-         * the click event handle of save button
+         * the click event handler of save button
          * 
          * @private
          * @param {Event}
@@ -742,25 +742,25 @@
             }
             var td = self._table.dataTable();
             if (self.options.remoteAjax !== null) {
-                if (typeof self._table.find('tr.newTr')[0] !== 'undefined') {
-                    $.each(self._table.find('tr.newTr'), function(index, value) {
+                var newRec = self._table.find('tr.newTr');
+                if (typeof newRec[0] !== 'undefined') {
+                    $.each(newRec, function(index, value) {
                         self._createRemoteAjax(td.fnGetData(value));
-                        self._table.find('tr.newTr').removeClass('newTr');
                     });
+                    newRec.removeClass('newTr');
                 }
-                if (typeof self._table.find('.updateTr')[0] !== 'undefined') {
-                    $.each(self._table.find('tr.updateTr'), function(index, value) {
+
+                var updateRec = self._table.find('tr.updateTr');
+                if (typeof updateRec[0] !== 'undefined') {
+                    $.each(updateRec, function(index, value) {
                         self._updateRemoteAjax(td.fnGetData(value));
-                        self._table.find('tr.updateTr').removeClass('updateTr');
                     });
+                    updateRec.removeClass('updateTr');
                 }
             }
-            // self._table.find('tr.clickedtr').removeClass('newTr');
+
             $('.afdui-td-input').removeClass('changeInput');
             self._setDetailStatus("save");
-            if (!self._trigger('closeButton', event, null)) {
-                return;
-            }
         },
         /**
          * the click event handle of delete button
