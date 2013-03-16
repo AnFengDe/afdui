@@ -701,7 +701,7 @@
             });
         },
         /**
-         * the click event handle of new button
+         * the click event handler of new button
          * 
          * @private
          * @param {Event}
@@ -716,21 +716,15 @@
             }
             // new a null data
             var data = {};
-            $.each(self.options.table.aoColumns, function(index, value) {
-                data[value.mData] = "";
-            });
-            $(self._table.dataTable().fnAddDataAndDisplay(data).nTr).addClass('newTr').addClass('noneEdit').trigger('click');
-            self._setDetailStatus("new");
+
             $.each(self.options.form.pages, function(i) {
                 $.each(self.options.form.pages[i].controls, function(j, val) {
-                    if (self.options.form.pages[i].controls[j].customData !== undefined) {
-                        self._tabs.find('#detail_' + val.id)[0].value = val.customData();
-                    }
+                    data[val.id] = (self.options.form.pages[i].controls[j].customData !== undefined) ? val.customData() : '';
                 });
             });
-            if (!self._trigger('closeButton', event, null)) {
-                return;
-            }
+
+            $(self._table.dataTable().fnAddDataAndDisplay(data).nTr).addClass('newTr').addClass('noneEdit').trigger('click');
+            self._setDetailStatus("new");
         },
         /**
          * the click event handle of save button
