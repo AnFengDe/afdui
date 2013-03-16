@@ -312,7 +312,8 @@
             return true;
         },
         /**
-         * create the detail form pages(include input, select, tips and input mask.
+         * create the detail form pages(include input, select, tips and input
+         * mask.
          * 
          * @private
          * @function
@@ -394,10 +395,75 @@
          * @private
          * @function
          * @param {Object}
-         *            definition of input
+         *            input definition of input
          * @memberOf tabledetail#
          */
         _buildInput : function(input) {
+            if (input.mask !== undefined) {
+                this._maskList.push({
+                    "name" : 'detail_' + input.id,
+                    "mask" : input.mask
+                });
+            }
+            return '<input id="detail_' + input.id + '" class="afdui-td-input" type="' + input.format + '" maxlength="'
+                    + input.maxlength + '" size="' + input.size + '" ' + (input.readonly ? 'readonly ' : '')
+                    + this._buildInputMessage(input.message) + '>';
+        },
+        /**
+         * create the html of select
+         * 
+         * @private
+         * @function
+         * @param {Object}
+         *            input definition of input
+         * @memberOf tabledetail#
+         */
+        _buildSelect : function(input) {
+            // <select><option>..</option></select>
+            var select = [];
+            select.push('<select id="detail_' + input.id + '" class="afdui-td-input">');
+            var options = [];
+            if ($.isArray(input.options)) {
+                options = input.options;
+            } else {
+                $.ajax({
+                    type : "GET",
+                    url : input.options,
+                    dataType : "json",
+                    async : false,
+                    success : function(data) {
+                        options = data;
+                    }
+                });
+            }
+            var self = this;
+            if (typeof self._code === 'undefined') {
+                self._code = {};
+            }
+            $.each(options, function(index, value) {
+                $.each(self.options.table.aoColumns, function(index, define) {
+                    if (input.id === define.mData) {
+                        if (typeof self._code[input.id] === 'undefined') {
+                            self._code[input.id] = {};
+                        }
+                        self._code[input.id][value.id] = value.name;
+                    }
+                });
+                select.push('<option value="' + value.id + '">' + value.name + "</option>");
+            });
+            select.push('</select>');
+            return select.join('');
+        },
+        /**
+         * create the html of detail form fields
+         * 
+         * @private
+         * @function
+         * @param {Object}
+         *            definition of input
+         * @memberOf tabledetail#
+         */
+        _buildDetailField : function(input) {
             if (typeof input.size === "undefined") {
                 input.size = 10;
             }
@@ -408,51 +474,10 @@
                 input.format = "text";
             }
             if ("input" === input.type) {
-                if (input.mask !== undefined) {
-                    this._maskList.push({
-                        "name" : 'detail_' + input.id,
-                        "mask" : input.mask
-                    });
-                }
-                return '<input id="detail_' + input.id + '" class="afdui-td-input" type="' + input.format + '" maxlength="'
-                        + input.maxlength + '" size="' + input.size + '" ' + (input.readonly ? 'readonly ' : '')
-                        + this._buildInputMessage(input.message) + '>';
+                return this._buildInput(input);
             }
             if ("select" === input.type) {
-                // <select><option>..</option></select>
-                var select = [];
-                select.push('<select id="detail_' + input.id + '" class="afdui-td-input">');
-                var options = [];
-                if ($.isArray(input.options)) {
-                    options = input.options;
-                } else {
-                    $.ajax({
-                        type : "GET",
-                        url : input.options,
-                        dataType : "json",
-                        async : false,
-                        success : function(data) {
-                            options = data;
-                        }
-                    });
-                }
-                var self = this;
-                if (typeof self._code === 'undefined') {
-                    self._code = {};
-                }
-                $.each(options, function(index, value) {
-                    $.each(self.options.table.aoColumns, function(index, define) {
-                        if (input.id === define.mData) {
-                            if (typeof self._code[input.id] === 'undefined') {
-                                self._code[input.id] = {};
-                            }
-                            self._code[input.id][value.id] = value.name;
-                        }
-                    });
-                    select.push('<option value="' + value.id + '">' + value.name + "</option>");
-                });
-                select.push('</select>');
-                return select.join('');
+                return this._buildSelect(input);
             }
         },
         /**
@@ -475,7 +500,7 @@
                     detailFields.push(page.controls[i * cols + j].label);
                     detailFields.push('</td>');
                     detailFields.push('<td>');
-                    detailFields.push(this._buildInput(page.controls[i * cols + j]));
+                    detailFields.push(this._buildDetailField(page.controls[i * cols + j]));
                     detailFields.push('</td>');
                 }
                 detailFields.push('</tr>');
