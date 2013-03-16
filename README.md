@@ -1,3 +1,4 @@
+# afdui [![Build Status](https://api.travis-ci.org/AnFengDe/afdui.png?branch=master)](https://api.travis-ci.org/AnFengDe/afdui) 
 #JQuery UI TableDetail Widget#
 [https://github.com/AnFfengDe/afdui.git](https://github.com/AnFfengDe/afdui.git)
 
@@ -176,14 +177,13 @@ The second, settings data and add data to tabledetail:
         $divid.tabledetail().addData(Jsondata);              
     </script>
 
-[demopic1](/doc/demopic/demopic1.png "the basic tabledetail pages")
+![alt text](https://raw.github.com/AnFengDe/afdui/master/doc/demopic/demo1.png "the basic tabledetail pages")
+         
+![alt text](https://raw.github.com/AnFengDe/afdui/master/doc/demopic/demo2.png "the form pages")
 
-[demopic2](/doc/demopic/demopic2.png "the form pages")
+![alt text](https://raw.github.com/AnFengDe/afdui/master/doc/demopic/demo3.png "the callback dialog")
 
-[demopic3](/doc/demopic/demopic3.png "the callback dialog")
+![alt text](https://raw.github.com/AnFengDe/afdui/master/doc/demopic/demo4.png "the input validate message")
 
-[demopic4](/doc/demopic/demopic4.png "the input validator message")
-
-    
 For more information on how to use tabledetail widget, check the documentation or demo.
 
