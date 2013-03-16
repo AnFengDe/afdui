@@ -312,7 +312,7 @@
             return true;
         },
         /**
-         * create the detail form pages
+         * create the detail form pages(include input, select, tips and input mask.
          * 
          * @private
          * @function
@@ -336,7 +336,7 @@
             this._tabs = $('#detailTabs');
         },
         /**
-         * create the detail form tab header
+         * create the detail form tab holder
          * 
          * @private
          * @function
