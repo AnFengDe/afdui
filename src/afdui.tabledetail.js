@@ -484,6 +484,8 @@
          * create the detail form tab content
          * 
          * @private
+         * @param {Object}
+         *            page detail form page object
          * @function
          * @memberOf tabledetail#
          */
@@ -511,6 +513,9 @@
          * setting the status of controls in detail form
          * 
          * @private
+         * @param {String}
+         *            status status string, include 'init','trclcik',
+         *            'inputchange', 'new', 'delete'
          * @function
          * @memberOf tabledetail#
          */
@@ -550,19 +555,25 @@
          * Sync content in the tabs within the element to the table
          * 
          * @private
+         * @param {Object}
+         *            selected the selected row object
+         * @param {Object}
+         *            key the data key
+         * @param {Object}
+         *            value the data value
          * @function
          * @memberOf tabledetail#
          */
-        _updateDataTableContents : function(self, key, value) {
-            if (self === undefined) {
+        _updateDetail : function(selected, key, value) {
+            if (selected === undefined) {
                 return;
             }
-            var data = this._table.fnGetData(self);
+            var data = this._table.fnGetData(selected);
             data[key] = value;
-            this._table.dataTable().fnUpdate(data, this._table.dataTable().fnGetPosition(self));
+            this._table.dataTable().fnUpdate(data, this._table.dataTable().fnGetPosition(selected));
         },
         /**
-         * the click event handle to tr data
+         * the click event handler to tr data
          * 
          * @private
          * @param {Event}
@@ -606,13 +617,15 @@
                     $("#detail_" + key).val(define);
                 }
             });
+            // call customize callback function
+            // TODO:check rowClick function first best
             event.data._trigger('rowClick', null, {
                 current : this,
                 sorting_1 : $(this).find("td.sorting_1")
             });
         },
         /**
-         * the hover event handle to tr data
+         * the hover event handler to tr data
          * 
          * @private
          * @param {Event}
@@ -622,19 +635,19 @@
          */
         _handle_tr_hover : function(event) {
             if (event.type === 'mouseenter') {
-                $(this).addClass('hover');
-                $(this).find("td.sorting_1").addClass('hover');
+                $(this).addClass('hover').find("td.sorting_1").addClass('hover');
             } else {
-                $(this).removeClass("hover");
-                $(this).find("td.sorting_1").removeClass("hover");
+                $(this).removeClass("hover").find("td.sorting_1").removeClass("hover");
             }
+            // call customize callback function
+            // TODO:check rowHover function first best
             event.data._trigger('rowHover', event, {
                 current : this,
                 sorting_1 : $(this).find("td.sorting_1")
             });
         },
         /**
-         * the change event handle to input
+         * the change event handler to input
          * 
          * @private
          * @param {Event}
@@ -644,19 +657,23 @@
          */
         _handle_input_change : function(event) {
             var self = event.data;
+
             self._setDetailStatus('inputchange');
             self._table.find('.noneEdit').removeClass('noneEdit');
+
             var id = this.id.slice(7, this.id.length);
-            // validator...
-            var obj = self._searchInputById(id);
+
+            // add update flag
             if (self._table.find('tr.clickedtr.newTr').length === 0) {
                 self._table.find('tr.clickedtr').addClass('updateTr');
             }
-            if (obj.validator !== undefined) {
-                if (!obj.validator($(this).val())) {
-                    $('#' + this.id).tooltip('option', 'tooltipClass', 'ui-state-error');
-                    $('#' + this.id).addClass('ui-state-error');
-                    return false;
+
+            // validator...
+            var config = self._getConfigById(id);
+            if (config.validator !== undefined) {
+                if (!config.validator($(this).val())) {
+                    $('#' + this.id).tooltip('option', 'tooltipClass', 'ui-state-error').addClass('ui-state-error');
+                    return;
                 }
                 $('#' + this.id).tooltip('option', 'tooltipClass', '');
                 $('#' + this.id).removeClass('ui-state-error');
@@ -666,15 +683,17 @@
             $('tr.clickedtr.newTr.noneEdit').removeClass('noneEdit');
 
             var inputself = this;
-            // async to table...
-            if (obj.type === 'select') {
-                $.each(obj.options, function(key, value) {
-                    if (value.id === inputself.value) {
-                        self._updateDataTableContents(self._selected_tr, id, value.name);
-                    }
+
+            // sync to table...
+            if (config.type === 'select') {
+                var obj = $.grep(config.options, function(e) {
+                    return e.id === inputself.value;
                 });
+                if (obj.length > 0) {
+                    self._updateDetail(self._selected_tr, id, obj[0].name);
+                }
             } else {
-                self._updateDataTableContents(self._selected_tr, id, inputself.value);
+                self._updateDetail(self._selected_tr, id, inputself.value);
             }
 
             $('#form_message').hide().html('Saving...').slideDown(3000, function() {
@@ -935,13 +954,13 @@
             $.ajax(createRemoteAjax);
         },
         /**
-         * search the input element by id
+         * search the input element from options by id
          * 
          * @private
          * @function
          * @memberOf tabledetail#
          */
-        _searchInputById : function(id) {
+        _getConfigById : function(id) {
             var input = null;
             $.each(this.options.form.pages, function() {
                 var res = $.grep(this.controls, function(e) {
