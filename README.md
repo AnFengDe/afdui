@@ -36,6 +36,7 @@ Include jQuery,JQuery UI and the widget on a page, Then select a div to show dea
 
     <script src="jquery.js"></script>
     <script src="jquery-ui.js"></script>
+    <script src="datatables.js"></script>
     <script src="tabledetail.js"></script>
 
     <script type = "text/javascript">
@@ -80,6 +81,7 @@ tableDetail consists of three methods, one to set up tableDetail, one to add Jso
 - **hoverTr**: custom event for table's tr of hover
 - **clickTr**: custom event for table's tr of click
 - **formValidator**: custom function for validating form
+- **fieldValidator**: custom function for validating table tr's field
 - **remoteAjax**:  remote data sending to server by REST
    - **create**: put data to server
    - **edit**: post data to server
@@ -93,7 +95,95 @@ other method:
 
     $('divid').tabledetail("destroy"): destroy element of tabledetail. 
 
+For example:
 
+    var options = {
+        "width" : 1000,
+        "height" : 540, 
+        "table" : {
+            "sScrollY" : "220px",
+            "iDisplayLength" : 10,
+            "aoColumns" : [{
+            "sTitle" : "ID",
+            "mData" : "id",
+            "sWidth" : "15%"
+            }, {
+            "sTitle" : "Name",
+            "mData" : "name",
+            "sWidth" : "45%"
+            } ....]
+        },
+        "form" : {
+            "pages" : [{
+            "title" : "General Info",
+            "rows" : "2",
+            "controls" : [{
+                "label" : "ID",
+                "id" : "id",
+                "type" : "input",
+                "format" : "number",
+                "readonly" : false,
+                "maxlength" : 10,
+                "size" : 10
+            }, {
+                "label" : "Name",
+                "id" : "name",
+                "type" : "input",
+                "format" : "text",
+                "readonly" : false,
+                "maxlength" : 32,
+                "size" : 32,
+                "validator" : function(value) {
+                    return (1 <= value.length && value.length <= 32);
+                },
+                "customData" : function() {
+                    return '2400000'; 
+                },
+                "message" : "Name length between in 1 - 32"
+                }] 
+            }]
+        },
+        "rowHover" : function(e, data) {
+            if (e.handleObj.origType === "mouseenter") {
+                data.current.style.color = 'red';
+            } else {
+                data.current.style.color = 'black';
+            }
+        },
+        "formValidator" : function(obj) {
+            if ((obj.id.value === obj.name.value) && (obj.id.value.length !== 0 && obj.name.value.length !== 0)) {
+                return 'The value of id can not same as name value!';
+            }
+        },
+        "remoteAjax" : {
+            "create" : "/powerflow/api/config/devices/buses/new",
+            "edit" : "/powerflow/api/config/devices/buses/_name_",
+            "remove" : "/powerflow/api/config/devices/buses/_id_"
+        }
+    }
 
+Then, let's create a tabledetail on the html.
+
+The first, create a div:
+
+    <div id = "tabledetail"></div>
+
+The second, settings data and add data to tabledetail:
+
+    <script>
+        var $divid = $("divid");
+        $divid.tabledetail(options);
+        $divid.tabledetail().addData(Jsondata);              
+    </script>
+
+[demopic1](/doc/demopic/demopic1.png "the basic tabledetail pages")
+
+[demopic2](/doc/demopic/demopic2.png "the form pages")
+
+[demopic3](/doc/demopic/demopic3.png "the callback dialog")
+
+[demopic4](/doc/demopic/demopic4.png "the input validator message")
+
+    
 For more information on how to use tabledetail widget, check the documentation or demo.
 
