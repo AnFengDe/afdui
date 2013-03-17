@@ -778,6 +778,9 @@
             var self = event.data;
             var deleted = self._table.find('tr.clickedtr');
             var td = self._table.dataTable(), data = td.fnGetData(deleted[0]);
+            if(!self._deleteRemoteAjax(data)) {
+                return;
+            }
             $('.afdui-td-input').each(function(key, val) {
                 val.value = "";
                 if (val.tagName === "SELECT") {
@@ -785,7 +788,6 @@
                 }
             });
 
-            self._deleteRemoteAjax(data);
             td.fnDeleteRow(td.fnGetPosition(deleted[0]));
 
             self._setDetailStatus("delete");
@@ -832,8 +834,9 @@
                 "type" : "PUT",
                 "contentType" : "application/json",
                 "dataType" : "json",
-                "data" : data
-            };
+                "data" : data,
+                "async" : false
+            }, statusCode = '200';
             updateRemoteAjax.success =
             /**
              * @ignore
@@ -848,11 +851,17 @@
              * @ignore
              */
             function(xhr) {
+                statusCode = xhr.status;
                 if (!self._trigger('editErrorMsg', null, xhr.status)) {
                     return;
                 }
             };
             $.ajax(updateRemoteAjax);
+            if(statusCode !== '200'){
+                return false;
+            } else {
+                return true;
+            }
         },
         /**
          * delete data，Ajax to remote
@@ -866,9 +875,11 @@
             var key = deleteRemoteUrl.match(/_.+?_/g)[0];
             var value = data[key.slice(1, key.length - 1)];
             var deleteRemoteAjax = null;
+            var statusCode = '200';
             deleteRemoteAjax = {
                 "url" : deleteRemoteUrl.replace(/_.+?_/g, value),
-                "type" : "DELETE"
+                "type" : "DELETE",
+                "async" : false
             };
             deleteRemoteAjax.success =
             /**
@@ -884,11 +895,17 @@
              * @ignore
              */
             function(xhr) {
+                statusCode = xhr.status;
                 if (!self._trigger('delErrorMsg', null, xhr)) {
                     return;
                 }
             };
             $.ajax(deleteRemoteAjax);
+            if(statusCode !== '200'){
+                return false;
+            } else {
+                return true;
+            }
         },
         /**
          * create data，Ajax to remote
@@ -899,13 +916,14 @@
          */
         _createRemoteAjax : function(data) {
             var createRemoteUrl = this.options.remoteAjax.create, self = this;
-            var createRemoteAjax = null;
+            var createRemoteAjax = null, statusCode = '200';
             createRemoteAjax = {
                 "url" : createRemoteUrl,
                 "type" : "POST",
                 "contentType" : "application/json",
                 "dataType" : "json",
-                "data" : data
+                "data" : data,
+                "async" : false
             };
             createRemoteAjax.success =
             /**
@@ -921,11 +939,17 @@
              * @ignore
              */
             function(xhr) {
+                statusCode = xhr.status;
                 if (!self._trigger('createErrorMsg', null, xhr.status)) {
                     return;
                 }
             };
             $.ajax(createRemoteAjax);
+            if(statusCode !== '200'){
+                return false;
+            } else {
+                return true;
+            }
         },
         /**
          * search the input element from options by id

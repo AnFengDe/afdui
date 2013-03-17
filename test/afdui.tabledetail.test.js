@@ -48,7 +48,7 @@
                     "validator" : function(value) {
                         return (1 <= value.length && value.length <= 32);
                     },
-                    "message" : "the length between 1-32"
+                    "message" : "Name length between 1-32"
                 }, {
                     "label" : "Alias",
                     "id" : "alias",
@@ -61,7 +61,7 @@
                     "validator" : function(value) {
                         return (1 <= value.length && value.length <= 32 && !isNaN(Number(value) / 1));
                     },
-                    "message" : "the numerica length between 1-32"
+                    "message" : "Numeric length between 1-32"
                 }, {
                     "label" : "Voltage Level",
                     "id" : "voltageLevel",
@@ -107,6 +107,9 @@
             } ]
         },
         "editSuccessMsg" : function() {
+            if(typeof $('#returnDialog')[0] !== 'undefined') {
+                $("#returnDialog").dialog('close');
+            }
             var html = '<div id = returnDialog><p>Update Data Success!</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
@@ -117,6 +120,9 @@
             $("#returnDialog").dialog('open');
         },
         "delSuccessMsg" : function() {
+            if(typeof $('#returnDialog')[0] !== 'undefined') {
+                $("#returnDialog").dialog('close');
+            }
             var html = '<div id = returnDialog><p>Remove Data Success!</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
@@ -127,7 +133,10 @@
             $("#returnDialog").dialog('open');
         },
         "delErrorMsg" : function(e, data) {
-            var html = '<div id = returnDialog><p>Error Code:' + data + '</p></div>';
+            if(typeof $('#returnDialog')[0] !== 'undefined') {
+                $("#returnDialog").dialog('close');
+            }
+            var html = '<div id = returnDialog><p>Error Code:' + data.status + '</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
                 close : function() {
@@ -137,6 +146,9 @@
             $("#returnDialog").dialog('open');
         },
         "createSuccessMsg" : function() {
+            if(typeof $('#returnDialog')[0] !== 'undefined') {
+                $("#returnDialog").dialog('close');
+            }
             var html = '<div id = returnDialog><p>Create Data Success</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
@@ -147,6 +159,9 @@
             $("#returnDialog").dialog('open');
         },
         "selectChange" : function(e, data) {
+            if(typeof $('#returnDialog')[0] !== 'undefined') {
+                $("#returnDialog").dialog('close');
+            }
             var html = '<div id = returnDialog><p>' + data + '</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
@@ -296,7 +311,7 @@
             // test the detailed pages change select tag is
             // update table
             $('#detail_voltageLevel').val('3').change();
-            vString = td.tabledetail("getData")[0].voltageLevel;
+            var vString = td.tabledetail("getData")[0].voltageLevel;
             ok(vString === $('#detail_voltageLevel').val(), 'the detailed pages change select tag is update table');
 
             $('#returnDialog').dialog('destroy').remove();
@@ -543,11 +558,11 @@
             url : "info_line.json",
             dataType : "json"
         })).done(function(data) {
-            var td = tdLoadInit(data);
+            var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
 
             var id = $.mockjax({
                 url : "/powerflow/api/config/devices/buses/240000011",
-                status : 500
+                status : 404
             });
 
             $('#tblDetail tr:eq(9)').trigger('click');
@@ -555,7 +570,8 @@
 
             setTimeout(function() {
                 var $returnDialog = $('#returnDialog');
-                ok($returnDialog.find('p')[0].innerHTML === 'Error Code:500', 'the remote message is right after delete');
+                ok($returnDialog.find('p')[0].innerHTML === 'Error Code:404', 'the remote message is right after delete');
+                ok(572 === tb.fnSettings().fnRecordsTotal(), 'The data\'s count is right after delete failure');
                 $returnDialog.dialog('destroy').remove();
                 td.tabledetail("destroy");
 
@@ -689,18 +705,22 @@
             dataType : "json"
         })).done(function(data) {
             var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
-            var remoteRet = false;
-            var id = $.mockjax(function(settings) {
-                var ret = (settings.type === 'DELETE') && (settings.url === '/powerflow/api/config/devices/buses/240000001');
-                remoteRet = ret ? true : false;
+            
+            var id = $.mockjax({
+                url : "/powerflow/api/config/devices/buses/240000001",
+                responseText : {
+                    status : 'success'
+                }
             });
+
 
             $($('#tblDetail tr')[2]).trigger('click');
             $('#detail_btn_delete').trigger('click');
             setTimeout(function() {
-                ok(remoteRet, 'the value of return from remote is right');
+                
+                ok($('#returnDialog').find('p')[0].innerHTML === 'Remove Data Success!', 'the value of return from remote is right');
                 ok(571 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after delete');
-                ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'delete button is disabled');
+                ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'Delete button is disabled');
 
                 $('#returnDialog').dialog('destroy').remove();
                 td.tabledetail("destroy");
@@ -719,30 +739,31 @@
             url : "info_line.json",
             dataType : "json"
         })).done(function(data) {
-            var td = tdLoadInit(data), tb = $('#dataTable').dataTable(), remoteRet = false;
+            var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
 
-            var id = $.mockjax(function(settings) {
-                var ret = (settings.type === 'PUT');
-                ret = ret && (settings.url === '/powerflow/api/config/devices/buses/hefeiTransformed');
-                remoteRet = ret ? true : false;
-
-                $('#tblDetail tr :eq(3)').trigger('click');
-                $('#detail_name').val('hefeiTransformed').trigger('change');
-
-                $('#detail_btn_save').trigger('click');
-                setTimeout(function() {
-                    ok(remoteRet, 'the value of return from remote is right');
-                    ok(572 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after edit');
-                    var ret = ($('#detail_btn_save').button('option', 'disabled') !== false);
-                    ok(ret, 'delete button is disabled');
-
-                    $('#returnDialog').dialog('destroy').remove();
-                    td.tabledetail("destroy");
-
-                    $.mockjaxClear(id);
-                    start();
-                }, 1000);
+            var id = $.mockjax({
+                url : "/powerflow/api/config/devices/buses/hefeiTransformed",
+                responseText : {
+                    status : 'success'
+                }
             });
+
+            $('#tblDetail tr :eq(3)').trigger('click');
+            $('#detail_name').val('hefeiTransformed').trigger('change');
+
+            $('#detail_btn_save').trigger('click');
+            setTimeout(function() {
+                ok($('#returnDialog').find('p')[0].innerHTML === 'Update Data Success!', 'the value of return from remote is right');
+                ok(572 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after edit');
+                var ret = ($('#detail_btn_save').button('option', 'disabled') !== false);
+                ok(ret, 'delete button is disabled');
+
+                $('#returnDialog').dialog('destroy').remove();
+                td.tabledetail("destroy");
+
+                $.mockjaxClear(id);
+                start();
+            }, 1000);
         }).fail(function() {
             ok(false, "Load tabledetail_options_test.json is error");
             start();
@@ -757,11 +778,12 @@
             var td = $('#tblDetail').tabledetail(testOptions);
             td.tabledetail('addData', data);
             var tb = $('#dataTable').dataTable();
-            var remoteRet = false;
-            var id = $.mockjax(function(settings) {
-                var ret = (settings.type === 'POST');
-                ret = ret && (settings.url === '/powerflow/api/config/devices/buses/new');
-                remoteRet = ret ? true : false;
+
+            var id = $.mockjax({
+                url : "/powerflow/api/config/devices/buses/new",
+                responseText : {
+                    status : 'success'
+                }
             });
 
             // click the newbutton, enter two value of
@@ -772,7 +794,7 @@
 
             $('#detail_btn_save').trigger('click');
             setTimeout(function() {
-                ok(remoteRet, 'the value of return from remote is right');
+                ok($('#returnDialog').find('p')[0].innerHTML === 'Create Data Success', 'the value of return from remote is right');
                 ok(573 === tb.fnSettings().fnRecordsTotal(), 'the data number is right after create');
                 ok($('#detail_btn_save').button('option', 'disabled') !== false, 'deletebutton is disabled');
 
@@ -797,16 +819,29 @@
             td.tabledetail('addData', data);
             var tb = $('#dataTable').dataTable();
 
-            var remoteRet = [];
-            var id = $.mockjax(function(settings) {
-                var ret1 = (settings.type === 'POST');
-                ret1 = ret1 && (settings.url === '/powerflow/api/config/devices/buses/new');
-                var ret2 = (settings.type === 'PUT');
-                ret2 = ret2 && (settings.url === '/powerflow/api/config/devices/buses/huaibeiTransformed');
-                if (ret1 || ret2) {
-                    remoteRet.push(true);
-                } else {
-                    remoteRet.push(false);
+//            var remoteRet = [];
+//            var id = $.mockjax(function(settings) {
+//                var ret1 = (settings.type === 'POST');
+//                ret1 = ret1 && (settings.url === '/powerflow/api/config/devices/buses/new');
+//                var ret2 = (settings.type === 'PUT');
+//                ret2 = ret2 && (settings.url === '/powerflow/api/config/devices/buses/huaibeiTransformed');
+//                if (ret1 || ret2) {
+//                    remoteRet.push(true);
+//                } else {
+//                    remoteRet.push(false);
+//                }
+//            });
+            
+            var id1 = $.mockjax({
+                url : "/powerflow/api/config/devices/buses/new",
+                responseText : {
+                    status : 'success'
+                }
+            });
+            var id2 = $.mockjax({
+                url : "/powerflow/api/config/devices/buses/huaibeiTransformed",
+                responseText : {
+                    status : 'success'
                 }
             });
 
@@ -821,14 +856,15 @@
             $('#detail_btn_save').trigger('click');
 
             setTimeout(function() {
-                ok(remoteRet[0] && remoteRet[1], 'the value of return from remote is right');
+//                ok(remoteRet[0] && remoteRet[1], 'the value of return from remote is right');
                 ok(573 === tb.fnSettings().fnRecordsTotal(), 'the data number is right after create');
                 ok($('#detail_btn_save').button('option', 'disabled') !== false, 'deletebutton is disabled');
 
                 $('#returnDialog').dialog('destroy').remove();
                 td.tabledetail("destroy");
 
-                $.mockjaxClear(id);
+                $.mockjaxClear(id1);
+                $.mockjaxClear(id2);
                 start();
             }, 1000);
         }).fail(function() {
