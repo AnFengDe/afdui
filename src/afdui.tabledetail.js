@@ -884,7 +884,7 @@
              * @ignore
              */
             function(xhr) {
-                if (!self._trigger('delErrorMsg', null, xhr.status)) {
+                if (!self._trigger('delErrorMsg', null, xhr)) {
                     return;
                 }
             };
