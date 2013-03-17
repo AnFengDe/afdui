@@ -102,6 +102,9 @@
             height : 500,
             resizable : false,
             modal : true,
+            close : function() {
+                $(this).remove();
+            },
             buttons : null,
             table : null,
             form : null,
@@ -781,14 +784,14 @@
                     val.value = val.firstChild.value;
                 }
             });
-            
+
             self._deleteRemoteAjax(data);
             td.fnDeleteRow(td.fnGetPosition(deleted[0]));
-            
+
             self._setDetailStatus("delete");
         },
         /**
-         * the click event handle of close button
+         * the click event handler of close button
          * 
          * @private
          * @param {Event}
@@ -797,16 +800,7 @@
          * @memberOf tabledetail#
          */
         _handle_btn_close : function(event) {
-            var self = event.data;
-            if (self._validateForm() === false) {
-                return;
-            }
-            if (self._saveMessage() === false) {
-                $.ui.dialog.prototype.close.apply(self);
-                if (!self._trigger('closeButton', event, null)) {
-                    return;
-                }
-            }
+            event.data.destroy();
         },
         /**
          * the keyup event handle to select input
@@ -820,18 +814,6 @@
         _handle_key_up : function(event) {
             var self = event.data, value = $('#dataTable_filter input').val();
             self._trigger("selectChange", null, value);
-        },
-
-        /**
-         * check the save message is save when close the dialog or click other
-         * tr
-         * 
-         * @private
-         * @function
-         * @memberOf tabledetail#
-         */
-        _saveMessage : function() {
-            return (typeof $('.afdui-td-input .changeInput')[0] === 'object') ? true : false;
         },
 
         /**
