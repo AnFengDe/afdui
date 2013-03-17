@@ -763,7 +763,7 @@
             self._setDetailStatus("save");
         },
         /**
-         * the click event handle of delete button
+         * the click event handler of delete button
          * 
          * @private
          * @param {Event}
@@ -773,19 +773,19 @@
          */
         _handle_btn_delete : function(event) {
             var self = event.data;
-            var td = self._table.dataTable(), data = td.fnGetData(self._table.find('tr.clickedtr')[0]);
+            var deleted = self._table.find('tr.clickedtr');
+            var td = self._table.dataTable(), data = td.fnGetData(deleted[0]);
             $('.afdui-td-input').each(function(key, val) {
                 val.value = "";
                 if (val.tagName === "SELECT") {
                     val.value = val.firstChild.value;
                 }
             });
+            
             self._deleteRemoteAjax(data);
-            td.fnDeleteRow(td.fnGetPosition(self._table.find('tr.clickedtr')[0]));
+            td.fnDeleteRow(td.fnGetPosition(deleted[0]));
+            
             self._setDetailStatus("delete");
-            if (!self._trigger('closeButton', event, null)) {
-                return;
-            }
         },
         /**
          * the click event handle of close button
