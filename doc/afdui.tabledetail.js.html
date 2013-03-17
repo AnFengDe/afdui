@@ -129,6 +129,9 @@
             height : 500,
             resizable : false,
             modal : true,
+            close : function() {
+                $(this).remove();
+            },
             buttons : null,
             table : null,
             form : null,
@@ -339,7 +342,8 @@
             return true;
         },
         /**
-         * create the detail form pages
+         * create the detail form pages(include input, select, tips and input
+         * mask.
          * 
          * @private
          * @function
@@ -363,7 +367,7 @@
             this._tabs = $('#detailTabs');
         },
         /**
-         * create the detail form tab header
+         * create the detail form tab holder
          * 
          * @private
          * @function
@@ -421,10 +425,75 @@
          * @private
          * @function
          * @param {Object}
-         *            definition of input
+         *            input definition of input
          * @memberOf tabledetail#
          */
         _buildInput : function(input) {
+            if (input.mask !== undefined) {
+                this._maskList.push({
+                    "name" : 'detail_' + input.id,
+                    "mask" : input.mask
+                });
+            }
+            return '&lt;input id="detail_' + input.id + '" class="afdui-td-input" type="' + input.format + '" maxlength="'
+                    + input.maxlength + '" size="' + input.size + '" ' + (input.readonly ? 'readonly ' : '')
+                    + this._buildInputMessage(input.message) + '>';
+        },
+        /**
+         * create the html of select
+         * 
+         * @private
+         * @function
+         * @param {Object}
+         *            input definition of input
+         * @memberOf tabledetail#
+         */
+        _buildSelect : function(input) {
+            // &lt;select>&lt;option>..&lt;/option>&lt;/select>
+            var select = [];
+            select.push('&lt;select id="detail_' + input.id + '" class="afdui-td-input">');
+            var options = [];
+            if ($.isArray(input.options)) {
+                options = input.options;
+            } else {
+                $.ajax({
+                    type : "GET",
+                    url : input.options,
+                    dataType : "json",
+                    async : false,
+                    success : function(data) {
+                        options = data;
+                    }
+                });
+            }
+            var self = this;
+            if (typeof self._code === 'undefined') {
+                self._code = {};
+            }
+            $.each(options, function(index, value) {
+                $.each(self.options.table.aoColumns, function(index, define) {
+                    if (input.id === define.mData) {
+                        if (typeof self._code[input.id] === 'undefined') {
+                            self._code[input.id] = {};
+                        }
+                        self._code[input.id][value.id] = value.name;
+                    }
+                });
+                select.push('&lt;option value="' + value.id + '">' + value.name + "&lt;/option>");
+            });
+            select.push('&lt;/select>');
+            return select.join('');
+        },
+        /**
+         * create the html of detail form fields
+         * 
+         * @private
+         * @function
+         * @param {Object}
+         *            definition of input
+         * @memberOf tabledetail#
+         */
+        _buildDetailField : function(input) {
             if (typeof input.size === "undefined") {
                 input.size = 10;
             }
@@ -435,57 +504,18 @@
                 input.format = "text";
             }
             if ("input" === input.type) {
-                if (input.mask !== undefined) {
-                    this._maskList.push({
-                        "name" : 'detail_' + input.id,
-                        "mask" : input.mask
-                    });
-                }
-                return '&lt;input id="detail_' + input.id + '" class="afdui-td-input" type="' + input.format + '" maxlength="'
-                        + input.maxlength + '" size="' + input.size + '" ' + (input.readonly ? 'readonly ' : '')
-                        + this._buildInputMessage(input.message) + '>';
+                return this._buildInput(input);
             }
             if ("select" === input.type) {
-                // &lt;select>&lt;option>..&lt;/option>&lt;/select>
-                var select = [];
-                select.push('&lt;select id="detail_' + input.id + '" class="afdui-td-input">');
-                var options = [];
-                if ($.isArray(input.options)) {
-                    options = input.options;
-                } else {
-                    $.ajax({
-                        type : "GET",
-                        url : input.options,
-                        dataType : "json",
-                        async : false,
-                        success : function(data) {
-                            options = data;
-                        }
-                    });
-                }
-                var self = this;
-                if (typeof self._code === 'undefined') {
-                    self._code = {};
-                }
-                $.each(options, function(index, value) {
-                    $.each(self.options.table.aoColumns, function(index, define) {
-                        if (input.id === define.mData) {
-                            if (typeof self._code[input.id] === 'undefined') {
-                                self._code[input.id] = {};
-                            }
-                            self._code[input.id][value.id] = value.name;
-                        }
-                    });
-                    select.push('&lt;option value="' + value.id + '">' + value.name + "&lt;/option>");
-                });
-                select.push('&lt;/select>');
-                return select.join('');
+                return this._buildSelect(input);
             }
         },
         /**
          * create the detail form tab content
          * 
          * @private
+         * @param {Object}
+         *            page detail form page object
          * @function
          * @memberOf tabledetail#
          */
@@ -502,7 +532,7 @@
                     detailFields.push(page.controls[i * cols + j].label);
                     detailFields.push('&lt;/td>');
                     detailFields.push('&lt;td>');
-                    detailFields.push(this._buildInput(page.controls[i * cols + j]));
+                    detailFields.push(this._buildDetailField(page.controls[i * cols + j]));
                     detailFields.push('&lt;/td>');
                 }
                 detailFields.push('&lt;/tr>');
@@ -513,6 +543,9 @@
          * setting the status of controls in detail form
          * 
          * @private
+         * @param {String}
+         *            status status string, include 'init','trclcik',
+         *            'inputchange', 'new', 'delete'
          * @function
          * @memberOf tabledetail#
          */
@@ -552,19 +585,25 @@
          * Sync content in the tabs within the element to the table
          * 
          * @private
+         * @param {Object}
+         *            selected the selected row object
+         * @param {Object}
+         *            key the data key
+         * @param {Object}
+         *            value the data value
          * @function
          * @memberOf tabledetail#
          */
-        _updateDataTableContents : function(self, key, value) {
-            if (self === undefined) {
+        _updateDetail : function(selected, key, value) {
+            if (selected === undefined) {
                 return;
             }
-            var data = this._table.fnGetData(self);
+            var data = this._table.fnGetData(selected);
             data[key] = value;
-            this._table.dataTable().fnUpdate(data, this._table.dataTable().fnGetPosition(self));
+            this._table.dataTable().fnUpdate(data, this._table.dataTable().fnGetPosition(selected));
         },
         /**
-         * the click event handle to tr data
+         * the click event handler to tr data
          * 
          * @private
          * @param {Event}
@@ -608,13 +647,15 @@
                     $("#detail_" + key).val(define);
                 }
             });
+            // call customize callback function
+            // TODO:check rowClick function first best
             event.data._trigger('rowClick', null, {
                 current : this,
                 sorting_1 : $(this).find("td.sorting_1")
             });
         },
         /**
-         * the hover event handle to tr data
+         * the hover event handler to tr data
          * 
          * @private
          * @param {Event}
@@ -624,19 +665,19 @@
          */
         _handle_tr_hover : function(event) {
             if (event.type === 'mouseenter') {
-                $(this).addClass('hover');
-                $(this).find("td.sorting_1").addClass('hover');
+                $(this).addClass('hover').find("td.sorting_1").addClass('hover');
             } else {
-                $(this).removeClass("hover");
-                $(this).find("td.sorting_1").removeClass("hover");
+                $(this).removeClass("hover").find("td.sorting_1").removeClass("hover");
             }
+            // call customize callback function
+            // TODO:check rowHover function first best
             event.data._trigger('rowHover', event, {
                 current : this,
                 sorting_1 : $(this).find("td.sorting_1")
             });
         },
         /**
-         * the change event handle to input
+         * the change event handler to input
          * 
          * @private
          * @param {Event}
@@ -646,19 +687,23 @@
          */
         _handle_input_change : function(event) {
             var self = event.data;
+
             self._setDetailStatus('inputchange');
             self._table.find('.noneEdit').removeClass('noneEdit');
+
             var id = this.id.slice(7, this.id.length);
-            // validator...
-            var obj = self._searchInputById(id);
+
+            // add update flag
             if (self._table.find('tr.clickedtr.newTr').length === 0) {
                 self._table.find('tr.clickedtr').addClass('updateTr');
             }
-            if (obj.validator !== undefined) {
-                if (!obj.validator($(this).val())) {
-                    $('#' + this.id).tooltip('option', 'tooltipClass', 'ui-state-error');
-                    $('#' + this.id).addClass('ui-state-error');
-                    return false;
+
+            // validator...
+            var config = self._getConfigById(id);
+            if (config.validator !== undefined) {
+                if (!config.validator($(this).val())) {
+                    $('#' + this.id).tooltip('option', 'tooltipClass', 'ui-state-error').addClass('ui-state-error');
+                    return;
                 }
                 $('#' + this.id).tooltip('option', 'tooltipClass', '');
                 $('#' + this.id).removeClass('ui-state-error');
@@ -668,15 +713,17 @@
             $('tr.clickedtr.newTr.noneEdit').removeClass('noneEdit');
 
             var inputself = this;
-            // async to table...
-            if (obj.type === 'select') {
-                $.each(obj.options, function(key, value) {
-                    if (value.id === inputself.value) {
-                        self._updateDataTableContents(self._selected_tr, id, value.name);
-                    }
+
+            // sync to table...
+            if (config.type === 'select') {
+                var obj = $.grep(config.options, function(e) {
+                    return e.id === inputself.value;
                 });
+                if (obj.length > 0) {
+                    self._updateDetail(self._selected_tr, id, obj[0].name);
+                }
             } else {
-                self._updateDataTableContents(self._selected_tr, id, inputself.value);
+                self._updateDetail(self._selected_tr, id, inputself.value);
             }
 
             $('#form_message').hide().html('Saving...').slideDown(3000, function() {
@@ -684,7 +731,7 @@
             });
         },
         /**
-         * the click event handle of new button
+         * the click event handler of new button
          * 
          * @private
          * @param {Event}
@@ -699,24 +746,18 @@
             }
             // new a null data
             var data = {};
-            $.each(self.options.table.aoColumns, function(index, value) {
-                data[value.mData] = "";
-            });
-            $(self._table.dataTable().fnAddDataAndDisplay(data).nTr).addClass('newTr').addClass('noneEdit').trigger('click');
-            self._setDetailStatus("new");
+
             $.each(self.options.form.pages, function(i) {
                 $.each(self.options.form.pages[i].controls, function(j, val) {
-                    if (self.options.form.pages[i].controls[j].customData !== undefined) {
-                        self._tabs.find('#detail_' + val.id)[0].value = val.customData();
-                    }
+                    data[val.id] = (self.options.form.pages[i].controls[j].customData !== undefined) ? val.customData() : '';
                 });
             });
-            if (!self._trigger('closeButton', event, null)) {
-                return;
-            }
+
+            $(self._table.dataTable().fnAddDataAndDisplay(data).nTr).addClass('newTr').addClass('noneEdit').trigger('click');
+            self._setDetailStatus("new");
         },
         /**
-         * the click event handle of save button
+         * the click event handler of save button
          * 
          * @private
          * @param {Event}
@@ -731,28 +772,28 @@
             }
             var td = self._table.dataTable();
             if (self.options.remoteAjax !== null) {
-                if (typeof self._table.find('tr.newTr')[0] !== 'undefined') {
-                    $.each(self._table.find('tr.newTr'), function(index, value) {
+                var newRec = self._table.find('tr.newTr');
+                if (typeof newRec[0] !== 'undefined') {
+                    $.each(newRec, function(index, value) {
                         self._createRemoteAjax(td.fnGetData(value));
-                        self._table.find('tr.newTr').removeClass('newTr');
                     });
+                    newRec.removeClass('newTr');
                 }
-                if (typeof self._table.find('.updateTr')[0] !== 'undefined') {
-                    $.each(self._table.find('tr.updateTr'), function(index, value) {
+
+                var updateRec = self._table.find('tr.updateTr');
+                if (typeof updateRec[0] !== 'undefined') {
+                    $.each(updateRec, function(index, value) {
                         self._updateRemoteAjax(td.fnGetData(value));
-                        self._table.find('tr.updateTr').removeClass('updateTr');
                     });
+                    updateRec.removeClass('updateTr');
                 }
             }
-            // self._table.find('tr.clickedtr').removeClass('newTr');
+
             $('.afdui-td-input').removeClass('changeInput');
             self._setDetailStatus("save");
-            if (!self._trigger('closeButton', event, null)) {
-                return;
-            }
         },
         /**
-         * the click event handle of delete button
+         * the click event handler of delete button
          * 
          * @private
          * @param {Event}
@@ -762,22 +803,22 @@
          */
         _handle_btn_delete : function(event) {
             var self = event.data;
-            var td = self._table.dataTable(), data = td.fnGetData(self._table.find('tr.clickedtr')[0]);
+            var deleted = self._table.find('tr.clickedtr');
+            var td = self._table.dataTable(), data = td.fnGetData(deleted[0]);
             $('.afdui-td-input').each(function(key, val) {
                 val.value = "";
                 if (val.tagName === "SELECT") {
                     val.value = val.firstChild.value;
                 }
             });
+
             self._deleteRemoteAjax(data);
-            td.fnDeleteRow(td.fnGetPosition(self._table.find('tr.clickedtr')[0]));
+            td.fnDeleteRow(td.fnGetPosition(deleted[0]));
+
             self._setDetailStatus("delete");
-            if (!self._trigger('closeButton', event, null)) {
-                return;
-            }
         },
         /**
-         * the click event handle of close button
+         * the click event handler of close button
          * 
          * @private
          * @param {Event}
@@ -786,19 +827,10 @@
          * @memberOf tabledetail#
          */
         _handle_btn_close : function(event) {
-            var self = event.data;
-            if (self._validateForm() === false) {
-                return;
-            }
-            if (self._saveMessage() === false) {
-                $.ui.dialog.prototype.close.apply(self);
-                if (!self._trigger('closeButton', event, null)) {
-                    return;
-                }
-            }
+            event.data.destroy();
         },
         /**
-         * the keyup event handle to select input
+         * the keyup event handler to select input
          * 
          * @private
          * @param {Event}
@@ -812,18 +844,6 @@
         },
 
         /**
-         * check the save message is save when close the dialog or click other
-         * tr
-         * 
-         * @private
-         * @function
-         * @memberOf tabledetail#
-         */
-        _saveMessage : function() {
-            return (typeof $('.afdui-td-input .changeInput')[0] === 'object') ? true : false;
-        },
-
-        /**
          * update data，Ajax to remote
          * 
          * @private
@@ -833,10 +853,9 @@
         _updateRemoteAjax : function(data) {
             var updateRemoteUrl = this.options.remoteAjax.edit, self = this;
             var key = updateRemoteUrl.match(/_.+?_/g)[0];
-            var indexvalue = data[key.slice(1, key.length - 1)];
-            var updateRemoteAjax = null;
-            updateRemoteAjax = {
-                "url" : updateRemoteUrl.replace(/_.+?_/g, indexvalue),
+            var value = data[key.slice(1, key.length - 1)];
+            var updateRemoteAjax = {
+                "url" : updateRemoteUrl.replace(/_.+?_/g, value),
                 "type" : "PUT",
                 "contentType" : "application/json",
                 "dataType" : "json",
@@ -872,10 +891,10 @@
         _deleteRemoteAjax : function(data) {
             var deleteRemoteUrl = this.options.remoteAjax.remove, self = this;
             var key = deleteRemoteUrl.match(/_.+?_/g)[0];
-            var indexvalue = data[key.slice(1, key.length - 1)];
+            var value = data[key.slice(1, key.length - 1)];
             var deleteRemoteAjax = null;
             deleteRemoteAjax = {
-                "url" : deleteRemoteUrl.replace(/_.+?_/g, indexvalue),
+                "url" : deleteRemoteUrl.replace(/_.+?_/g, value),
                 "type" : "DELETE"
             };
             deleteRemoteAjax.success =
@@ -886,7 +905,6 @@
                 if (!self._trigger('delSuccessMsg')) {
                     return;
                 }
-                // return true;
             };
             deleteRemoteAjax.error =
             /**
@@ -937,13 +955,13 @@
             $.ajax(createRemoteAjax);
         },
         /**
-         * search the input element by id
+         * search the input element from options by id
          * 
          * @private
          * @function
          * @memberOf tabledetail#
          */
-        _searchInputById : function(id) {
+        _getConfigById : function(id) {
             var input = null;
             $.each(this.options.form.pages, function() {
                 var res = $.grep(this.controls, function(e) {
@@ -1009,7 +1027,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Mar 14 2013 22:55:14 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Mar 17 2013 17:48:48 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
