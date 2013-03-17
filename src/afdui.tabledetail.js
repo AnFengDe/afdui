@@ -803,7 +803,7 @@
             event.data.destroy();
         },
         /**
-         * the keyup event handle to select input
+         * the keyup event handler to select input
          * 
          * @private
          * @param {Event}
@@ -826,10 +826,9 @@
         _updateRemoteAjax : function(data) {
             var updateRemoteUrl = this.options.remoteAjax.edit, self = this;
             var key = updateRemoteUrl.match(/_.+?_/g)[0];
-            var indexvalue = data[key.slice(1, key.length - 1)];
-            var updateRemoteAjax = null;
-            updateRemoteAjax = {
-                "url" : updateRemoteUrl.replace(/_.+?_/g, indexvalue),
+            var value = data[key.slice(1, key.length - 1)];
+            var updateRemoteAjax = {
+                "url" : updateRemoteUrl.replace(/_.+?_/g, value),
                 "type" : "PUT",
                 "contentType" : "application/json",
                 "dataType" : "json",
@@ -865,10 +864,10 @@
         _deleteRemoteAjax : function(data) {
             var deleteRemoteUrl = this.options.remoteAjax.remove, self = this;
             var key = deleteRemoteUrl.match(/_.+?_/g)[0];
-            var indexvalue = data[key.slice(1, key.length - 1)];
+            var value = data[key.slice(1, key.length - 1)];
             var deleteRemoteAjax = null;
             deleteRemoteAjax = {
-                "url" : deleteRemoteUrl.replace(/_.+?_/g, indexvalue),
+                "url" : deleteRemoteUrl.replace(/_.+?_/g, value),
                 "type" : "DELETE"
             };
             deleteRemoteAjax.success =
@@ -879,7 +878,6 @@
                 if (!self._trigger('delSuccessMsg')) {
                     return;
                 }
-                // return true;
             };
             deleteRemoteAjax.error =
             /**

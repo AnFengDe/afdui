@@ -106,7 +106,7 @@
             } ]
         },
         "editSuccessMsg" : function() {
-            var html = '<div id = returnDialog><p>success</p></div>';
+            var html = '<div id = returnDialog><p>Update Data Success!</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
                 close : function() {
@@ -116,7 +116,7 @@
             $("#returnDialog").dialog('open');
         },
         "delSuccessMsg" : function() {
-            var html = '<div id = returnDialog><p>success</p></div>';
+            var html = '<div id = returnDialog><p>Remove Data Success!</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
                 close : function() {
@@ -126,7 +126,7 @@
             $("#returnDialog").dialog('open');
         },
         "delErrorMsg" : function(e, data) {
-            var html = '<div id = returnDialog><p>' + data + '</p></div>';
+            var html = '<div id = returnDialog><p>Error Code:' + data + '</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
                 close : function() {
@@ -136,7 +136,7 @@
             $("#returnDialog").dialog('open');
         },
         "createSuccessMsg" : function() {
-            var html = '<div id = returnDialog><p>success</p></div>';
+            var html = '<div id = returnDialog><p>Create Data Success</p></div>';
             $(html).appendTo($('#tblDetail'));
             $("#returnDialog").dialog({
                 close : function() {
@@ -561,7 +561,7 @@
 
             setTimeout(function() {
                 var $returnDialog = $('#returnDialog');
-                ok($returnDialog.find('p')[0].innerHTML === '500', 'the remote message is right after delete');
+                ok($returnDialog.find('p')[0].innerHTML === 'Error Code:500', 'the remote message is right after delete');
                 $returnDialog.dialog('destroy').remove();
                 td.tabledetail("destroy");
 
@@ -594,7 +594,7 @@
 
             setTimeout(function() {
                 var $returnDialog = $('#returnDialog');
-                ok($returnDialog.find('p')[0].innerHTML === 'success', 'the remote message is right after edit');
+                ok($returnDialog.find('p')[0].innerHTML === 'Update Data Success!', 'the remote message is right after edit');
 
                 $returnDialog.dialog('destroy').remove();
                 td.tabledetail("destroy");
@@ -630,7 +630,7 @@
 
             setTimeout(function() {
                 var $returnDialog = $('#returnDialog');
-                ok($returnDialog.find('p')[0].innerHTML === 'success', 'he remote message is right after modefied');
+                ok($returnDialog.find('p')[0].innerHTML === 'Create Data Success', 'he remote message is right after modefied');
 
                 $returnDialog.dialog('destroy').remove();
                 td.tabledetail("destroy");
