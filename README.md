@@ -1,10 +1,14 @@
 # afdui [![Build Status](https://api.travis-ci.org/AnFengDe/afdui.png?branch=master)](https://api.travis-ci.org/AnFengDe/afdui) 
-#JQuery UI TableDetail Widget#
+#afdui TableDetail Widget#
 [https://github.com/AnFfengDe/afdui.git](https://github.com/AnFfengDe/afdui.git)
+The afdui TableDetail is a JQuery UI Widget for master-slave dailog which supports the browsing, searching and modification of data.
+With this widget, you can quickly create a data maintenance form with less code, letting you focus on specific business logic.
 
-JQuery UI TableDetail Widget displays JSON data on the Dialog Widget of JQuery UI in JQuery's form and DataTable.
+![alt text](https://raw.github.com/AnFengDe/afdui/master/doc/demopic/demo1.png "the basic tabledetail pages")
 
-How to build your own JQuery UI TableDetail Widget
+afdui TableDetail integrated jQuery UI Dialog, DataTable, InputMask widget, display and modify JSON data in one widget.
+
+How to build your own afdui TableDetail widget
 ---------------------------------------------------
 First，clone  a copy of main JQuery git repo by running : 
 ``
@@ -34,7 +38,7 @@ grunt/grunt watch
 Getting Started
 ----------------
 Include jQuery,JQuery UI and the widget on a page, Then select a div to show deatail and call the tabledetail method.
-
+```html
     <script src="jquery.js"></script>
     <script src="jquery-ui.js"></script>
     <script src="datatables.js"></script>
@@ -43,12 +47,12 @@ Include jQuery,JQuery UI and the widget on a page, Then select a div to show dea
     <script type = "text/javascript">
         $("divid").tabledetail(options);
     </script>
-
+```
 API
 ---------------
 tableDetail consists of three methods, one to set up tableDetail, one to add Json data, one to get data form object from tabledetail, one to remove them.You'll find plenty of examples below. If you're looking for a specific option, checkout this list:
 
-    $('divid').tabledetail(options) : create a tabledetail on the Dialog.
+    $('.selector').tabledetail(options) : create a tabledetail on the Dialog.
 
 **options**: 
 
@@ -97,7 +101,7 @@ other method:
     $('divid').tabledetail("destroy"): destroy element of tabledetail. 
 
 For example:
-
+```javascript
     var options = {
         "width" : 1000,
         "height" : 540, 
@@ -162,23 +166,21 @@ For example:
             "remove" : "/powerflow/api/config/devices/buses/_id_"
         }
     }
-
+```
 Then, let's create a tabledetail on the html.
 
 The first, create a div:
-
+```html
     <div id = "tabledetail"></div>
-
+```
 The second, settings data and add data to tabledetail:
-
+```html
     <script>
         var $divid = $("divid");
         $divid.tabledetail(options);
         $divid.tabledetail().addData(Jsondata);              
     </script>
-
-![alt text](https://raw.github.com/AnFengDe/afdui/master/doc/demopic/demo1.png "the basic tabledetail pages")
-         
+```
 ![alt text](https://raw.github.com/AnFengDe/afdui/master/doc/demopic/demo2.png "the form pages")
 
 ![alt text](https://raw.github.com/AnFengDe/afdui/master/doc/demopic/demo3.png "the callback dialog")
