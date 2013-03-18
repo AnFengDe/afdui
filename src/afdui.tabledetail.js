@@ -79,6 +79,20 @@
             }
         },
         /**
+         * _language default options
+         * 
+         * @private
+         */
+        _LANGUAGE : { 
+            "table" : {
+                
+            },
+            "form" : {
+                "sSaving" : "",
+            }    
+        },
+        
+        /**
          * @name tableDetailOptions
          * @description tabledetail options
          * @property {Integer} width the form width
@@ -110,6 +124,7 @@
             form : null,
             formValidator : null,
             remoteAjax : null,
+            language : null
         },
         /**
          * widget's methods
@@ -129,7 +144,6 @@
             $('.ui-dialog').addClass('afdui-td');
             $('.ui-dialog-titlebar').addClass('afdui-td-titlebar');
 
-            // TODO:refactor less code for similar
             this._btn_new = $('#detail_btn_new');
             this._btn_save = $('#detail_btn_save');
             this._btn_delete = $('#detail_btn_delete');
@@ -172,7 +186,11 @@
             if (this.options.form === null && this.options.table === null) {
                 throw new Error('The table or form options must be set.');
             }
-
+            
+            this.options.language = $.extend({}, this._LANGUAGE, this.options.language);
+            if(this.options.language.table !== null) {
+                this._TABLE_DEFAULT["oLanguage"] = this.options.language.table; 
+            }     
             this.options.table = $.extend({}, this._TABLE_DEFAULT, this.options.table);
             this.options.buttons = $.extend({}, this.options.buttons, this._BUTTON_DEFAULT);
         },
@@ -621,7 +639,6 @@
                 }
             });
             // call customize callback function
-            // TODO:check rowClick function first best
             event.data._trigger('rowClick', null, {
                 current : this,
                 sorting_1 : $(this).find("td.sorting_1")
@@ -643,7 +660,6 @@
                 $(this).removeClass("hover").find("td.sorting_1").removeClass("hover");
             }
             // call customize callback function
-            // TODO:check rowHover function first best
             event.data._trigger('rowHover', event, {
                 current : this,
                 sorting_1 : $(this).find("td.sorting_1")
@@ -699,7 +715,7 @@
                 self._updateDetail(self._selected_tr, id, inputself.value);
             }
 
-            $('#form_message').hide().html('Saving...').slideDown(3000, function() {
+            $('#form_message').hide().html(self.options.language.form.sSaving.length === '0' ? 'Saving...' : self.options.language.form.sSaving).slideDown(3000, function() {
                 $(this).hide();
             });
         },
@@ -713,6 +729,10 @@
          * @memberOf tabledetail#
          */
         _handle_btn_new : function(event) {
+            var self = event.data;
+            if(!self._trigger("beforeNewButton", event, null)) {
+                return;
+            };
             var self = event.data;
             if (self._validateForm() === false) {
                 return;
@@ -739,6 +759,10 @@
          * @memberOf tabledetail#
          */
         _handle_btn_save : function(event) {
+            var self = event.data;
+            if(!self._trigger("beforeSaveButton", event, null)) {
+                return;
+            };
             var self = event.data;
             if (self._validateForm() === false) {
                 return;
@@ -776,6 +800,9 @@
          */
         _handle_btn_delete : function(event) {
             var self = event.data;
+            if(!self._trigger("beforeDeleteButton", event, null)) {
+                return;
+            }
             var deleted = self._table.find('tr.clickedtr');
             var td = self._table.dataTable(), data = td.fnGetData(deleted[0]);
             if(!self._deleteRemoteAjax(data)) {
@@ -802,7 +829,11 @@
          * @memberOf tabledetail#
          */
         _handle_btn_close : function(event) {
-            event.data.destroy();
+            var self = event.data;
+            if(!self._trigger("beforeCloseButton", event, null)) {
+                return;
+            }
+            self.destroy();
         },
         /**
          * the keyup event handler to select input
