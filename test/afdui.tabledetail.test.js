@@ -107,7 +107,7 @@
             } ]
         },
         "editSuccessMsg" : function() {
-            if(typeof $('#returnDialog')[0] !== 'undefined') {
+            if (typeof $('#returnDialog')[0] !== 'undefined') {
                 $("#returnDialog").dialog('close');
             }
             var html = '<div id = returnDialog><p>Update Data Success!</p></div>';
@@ -120,7 +120,7 @@
             $("#returnDialog").dialog('open');
         },
         "delSuccessMsg" : function() {
-            if(typeof $('#returnDialog')[0] !== 'undefined') {
+            if (typeof $('#returnDialog')[0] !== 'undefined') {
                 $("#returnDialog").dialog('close');
             }
             var html = '<div id = returnDialog><p>Remove Data Success!</p></div>';
@@ -133,7 +133,7 @@
             $("#returnDialog").dialog('open');
         },
         "delErrorMsg" : function(e, data) {
-            if(typeof $('#returnDialog')[0] !== 'undefined') {
+            if (typeof $('#returnDialog')[0] !== 'undefined') {
                 $("#returnDialog").dialog('close');
             }
             var html = '<div id = returnDialog><p>Error Code:' + data.status + '</p></div>';
@@ -146,7 +146,7 @@
             $("#returnDialog").dialog('open');
         },
         "createSuccessMsg" : function() {
-            if(typeof $('#returnDialog')[0] !== 'undefined') {
+            if (typeof $('#returnDialog')[0] !== 'undefined') {
                 $("#returnDialog").dialog('close');
             }
             var html = '<div id = returnDialog><p>Create Data Success</p></div>';
@@ -159,7 +159,7 @@
             $("#returnDialog").dialog('open');
         },
         "selectChange" : function(e, data) {
-            if(typeof $('#returnDialog')[0] !== 'undefined') {
+            if (typeof $('#returnDialog')[0] !== 'undefined') {
                 $("#returnDialog").dialog('close');
             }
             var html = '<div id = returnDialog><p>' + data + '</p></div>';
@@ -182,7 +182,7 @@
             data.current.style.color = 'blue';
         },
         "formValidator" : function(obj) {
-            if ((obj.id.value === obj.name.value) && (obj.id.value.length !== 0 && obj.name.value.length !== 0)) {
+            if ((obj.id === obj.name) && (obj.id.length !== 0 && obj.name.length !== 0)) {
                 return 'The value of id can not same as name!';
             }
         },
@@ -213,37 +213,37 @@
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
-        })).done(
-                function(data) {
-                    var td = tdLoadInit(data);
+        })).done(function(data) {
+            var td = tdLoadInit(data);
 
-                    ok(800 === td.tabledetail("option", "width"), "the wigth is right");
-                    ok(540 === td.tabledetail("option", "height"), "the height is right");
+            ok(800 === td.tabledetail("option", "width"), "the wigth is right");
+            ok(540 === td.tabledetail("option", "height"), "the height is right");
 
-                    var defaultTableOption = {
-                        "sScrollY" : "200px",
-                        "bLengthChange" : false,
-                        "iDisplayLength" : 25,
-                        "bJQueryUI" : true
-                    };
-                    var key = null;
-                    for (key in defaultTableOption) {
-                        if (td.tabledetail("option", "table")[key] === undefined
-                                || td.tabledetail("option", "table")[key] !== defaultTableOption[key]) {
-                            ok(false, key + " " + defaultTableOption[key] + " The setting error");
-                        }
-                    }
+            var defaultTableOption = {
+                "sScrollY" : "200px",
+                "bLengthChange" : false,
+                "iDisplayLength" : 25,
+                "bJQueryUI" : true
+            };
+            var key = null;
+            for (key in defaultTableOption) {
+                var ret = td.tabledetail("option", "table")[key] === undefined;
+                ret = ret || (td.tabledetail("option", "table")[key] !== defaultTableOption[key]);
+                if (ret) {
+                    ok(false, key + " " + defaultTableOption[key] + " The option setting error");
+                }
+            }
 
-                    td.tabledetail("destroy");
-                    start();
-                }).fail(function() {
+            td.tabledetail("destroy");
+            start();
+        }).fail(function() {
             ok(false, "Load info_line.json is error");
             start();
         });
     });
 
     module('afd Table Detail get set datas');
-    asyncTest('settingdata-JSON', function() {
+    asyncTest('setting data-JSON', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -266,7 +266,7 @@
         });
     });
 
-    asyncTest('settingdata-form the codeshow', function() {
+    asyncTest('setting data-show name by code in form', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -287,16 +287,16 @@
         });
     });
 
-    asyncTest('settingdata-input choose&modified be linked input', function() {
+    asyncTest('setting data-input choose&modified be linked input', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
         })).done(function(data) {
             var td = tdLoadInit(data);
 
-            // test click event is update detailed pages
-            $('#tblDetail tr:eq(2)').trigger('click');
-            ok($($('#tblDetail tr td')[0]).text() === $('#detail_id').val(), 'the detailed data same as choose data');
+            // test click event for select first row, update detailed pages
+            td.data("tabledetail")._trigger('rowselect', null, [ 0 ]);
+            ok(td.tabledetail("getSelected").id === td.tabledetail("getCurrent").id, 'the detailed data same as choose data');
 
             // the show is char，but the data is code，so can't
             // the compare in the html
@@ -324,7 +324,7 @@
         });
     });
 
-    asyncTest('settingdata-input modified data validator', function() {
+    asyncTest('setting data-input modified data validator', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -358,7 +358,7 @@
         });
     });
 
-    asyncTest('settingdata-input validator the new null data', function() {
+    asyncTest('setting data-input validator the new null data', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -381,7 +381,7 @@
         });
     });
 
-    asyncTest('settingdata-input validator mask', function() {
+    asyncTest('setting data-input validator mask', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -413,7 +413,7 @@
         });
     });
 
-    asyncTest('settingdata-input deletedata', function() {
+    asyncTest('setting data-input deletedata', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -449,7 +449,7 @@
         });
     });
 
-    asyncTest('settingdata-input deletedata-test of delete null tr', function() {
+    asyncTest('setting data-input deletedata-test of delete null tr', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -474,7 +474,7 @@
         });
     });
 
-    asyncTest('settingdata-input the test of edit select input', function() {
+    asyncTest('setting data-input the test of edit select input', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -509,7 +509,7 @@
         });
     });
 
-    asyncTest('settingdata-input  edit data the click the next page button', function() {
+    asyncTest('setting data-input  edit data the click the next page button', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -703,32 +703,33 @@
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
-        })).done(function(data) {
-            var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
-            
-            var id = $.mockjax({
-                url : "/powerflow/api/config/devices/buses/240000001",
-                responseText : {
-                    status : 'success'
-                }
-            });
+        })).done(
+                function(data) {
+                    var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
 
+                    var id = $.mockjax({
+                        url : "/powerflow/api/config/devices/buses/240000001",
+                        responseText : {
+                            status : 'success'
+                        }
+                    });
 
-            $($('#tblDetail tr')[2]).trigger('click');
-            $('#detail_btn_delete').trigger('click');
-            setTimeout(function() {
-                
-                ok($('#returnDialog').find('p')[0].innerHTML === 'Remove Data Success!', 'the value of return from remote is right');
-                ok(571 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after delete');
-                ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'Delete button is disabled');
+                    $($('#tblDetail tr')[2]).trigger('click');
+                    $('#detail_btn_delete').trigger('click');
+                    setTimeout(function() {
 
-                $('#returnDialog').dialog('destroy').remove();
-                td.tabledetail("destroy");
+                        ok($('#returnDialog').find('p')[0].innerHTML === 'Remove Data Success!',
+                                'the value of return from remote is right');
+                        ok(571 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after delete');
+                        ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'Delete button is disabled');
 
-                $.mockjaxClear(id);
-                start();
-            }, 1000);
-        }).fail(function() {
+                        $('#returnDialog').dialog('destroy').remove();
+                        td.tabledetail("destroy");
+
+                        $.mockjaxClear(id);
+                        start();
+                    }, 1000);
+                }).fail(function() {
             ok(false, "Load tabledetail_options_test.json is error");
             start();
         });
@@ -738,33 +739,35 @@
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
-        })).done(function(data) {
-            var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
+        })).done(
+                function(data) {
+                    var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
 
-            var id = $.mockjax({
-                url : "/powerflow/api/config/devices/buses/hefeiTransformed",
-                responseText : {
-                    status : 'success'
-                }
-            });
+                    var id = $.mockjax({
+                        url : "/powerflow/api/config/devices/buses/hefeiTransformed",
+                        responseText : {
+                            status : 'success'
+                        }
+                    });
 
-            $('#tblDetail tr :eq(3)').trigger('click');
-            $('#detail_name').val('hefeiTransformed').trigger('change');
+                    $('#tblDetail tr :eq(3)').trigger('click');
+                    $('#detail_name').val('hefeiTransformed').trigger('change');
 
-            $('#detail_btn_save').trigger('click');
-            setTimeout(function() {
-                ok($('#returnDialog').find('p')[0].innerHTML === 'Update Data Success!', 'the value of return from remote is right');
-                ok(572 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after edit');
-                var ret = ($('#detail_btn_save').button('option', 'disabled') !== false);
-                ok(ret, 'delete button is disabled');
+                    $('#detail_btn_save').trigger('click');
+                    setTimeout(function() {
+                        ok($('#returnDialog').find('p')[0].innerHTML === 'Update Data Success!',
+                                'the value of return from remote is right');
+                        ok(572 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after edit');
+                        var ret = ($('#detail_btn_save').button('option', 'disabled') !== false);
+                        ok(ret, 'delete button is disabled');
 
-                $('#returnDialog').dialog('destroy').remove();
-                td.tabledetail("destroy");
+                        $('#returnDialog').dialog('destroy').remove();
+                        td.tabledetail("destroy");
 
-                $.mockjaxClear(id);
-                start();
-            }, 1000);
-        }).fail(function() {
+                        $.mockjaxClear(id);
+                        start();
+                    }, 1000);
+                }).fail(function() {
             ok(false, "Load tabledetail_options_test.json is error");
             start();
         });
@@ -774,37 +777,39 @@
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
-        })).done(function(data) {
-            var td = $('#tblDetail').tabledetail(testOptions);
-            td.tabledetail('addData', data);
-            var tb = $('#dataTable').dataTable();
+        })).done(
+                function(data) {
+                    var td = $('#tblDetail').tabledetail(testOptions);
+                    td.tabledetail('addData', data);
+                    var tb = $('#dataTable').dataTable();
 
-            var id = $.mockjax({
-                url : "/powerflow/api/config/devices/buses/new",
-                responseText : {
-                    status : 'success'
-                }
-            });
+                    var id = $.mockjax({
+                        url : "/powerflow/api/config/devices/buses/new",
+                        responseText : {
+                            status : 'success'
+                        }
+                    });
 
-            // click the newbutton, enter two value of
-            // new input and trigger the change event
-            $('#detail_btn_new').trigger('click');
-            $('#detail_name').val('2400000002').trigger('change');
-            $('#detail_name').val('the transformed of hefei').trigger('change');
+                    // click the newbutton, enter two value of
+                    // new input and trigger the change event
+                    $('#detail_btn_new').trigger('click');
+                    $('#detail_name').val('2400000002').trigger('change');
+                    $('#detail_name').val('the transformed of hefei').trigger('change');
 
-            $('#detail_btn_save').trigger('click');
-            setTimeout(function() {
-                ok($('#returnDialog').find('p')[0].innerHTML === 'Create Data Success', 'the value of return from remote is right');
-                ok(573 === tb.fnSettings().fnRecordsTotal(), 'the data number is right after create');
-                ok($('#detail_btn_save').button('option', 'disabled') !== false, 'deletebutton is disabled');
+                    $('#detail_btn_save').trigger('click');
+                    setTimeout(function() {
+                        ok($('#returnDialog').find('p')[0].innerHTML === 'Create Data Success',
+                                'the value of return from remote is right');
+                        ok(573 === tb.fnSettings().fnRecordsTotal(), 'the data number is right after create');
+                        ok($('#detail_btn_save').button('option', 'disabled') !== false, 'deletebutton is disabled');
 
-                $('#returnDialog').dialog('destroy').remove();
-                td.tabledetail("destroy");
+                        $('#returnDialog').dialog('destroy').remove();
+                        td.tabledetail("destroy");
 
-                $.mockjaxClear(id);
-                start();
-            }, 1000);
-        }).fail(function() {
+                        $.mockjaxClear(id);
+                        start();
+                    }, 1000);
+                }).fail(function() {
             ok(false, "Load tabledetail_options_test.json is error");
             start();
         });
@@ -819,19 +824,21 @@
             td.tabledetail('addData', data);
             var tb = $('#dataTable').dataTable();
 
-//            var remoteRet = [];
-//            var id = $.mockjax(function(settings) {
-//                var ret1 = (settings.type === 'POST');
-//                ret1 = ret1 && (settings.url === '/powerflow/api/config/devices/buses/new');
-//                var ret2 = (settings.type === 'PUT');
-//                ret2 = ret2 && (settings.url === '/powerflow/api/config/devices/buses/huaibeiTransformed');
-//                if (ret1 || ret2) {
-//                    remoteRet.push(true);
-//                } else {
-//                    remoteRet.push(false);
-//                }
-//            });
-            
+            // var remoteRet = [];
+            // var id = $.mockjax(function(settings) {
+            // var ret1 = (settings.type === 'POST');
+            // ret1 = ret1 && (settings.url ===
+            // '/powerflow/api/config/devices/buses/new');
+            // var ret2 = (settings.type === 'PUT');
+            // ret2 = ret2 && (settings.url ===
+            // '/powerflow/api/config/devices/buses/huaibeiTransformed');
+            // if (ret1 || ret2) {
+            // remoteRet.push(true);
+            // } else {
+            // remoteRet.push(false);
+            // }
+            // });
+
             var id1 = $.mockjax({
                 url : "/powerflow/api/config/devices/buses/new",
                 responseText : {
@@ -856,7 +863,8 @@
             $('#detail_btn_save').trigger('click');
 
             setTimeout(function() {
-//                ok(remoteRet[0] && remoteRet[1], 'the value of return from remote is right');
+                // ok(remoteRet[0] && remoteRet[1], 'the value of return from
+                // remote is right');
                 ok(573 === tb.fnSettings().fnRecordsTotal(), 'the data number is right after create');
                 ok($('#detail_btn_save').button('option', 'disabled') !== false, 'deletebutton is disabled');
 
@@ -871,6 +879,6 @@
             ok(false, "Load tabledetail_options_test.json is error");
             start();
         });
-        
+
     });
 }(jQuery));

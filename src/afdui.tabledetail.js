@@ -83,15 +83,15 @@
          * 
          * @private
          */
-        _LANGUAGE : { 
+        _LANGUAGE : {
             "table" : {
-                
+
             },
             "form" : {
                 "sSaving" : "",
-            }    
+            }
         },
-        
+
         /**
          * @name tableDetailOptions
          * @description tabledetail options
@@ -124,7 +124,12 @@
             form : null,
             formValidator : null,
             remoteAjax : null,
-            language : null
+            language : null,
+            // handle table row select event
+            rowselect : function(e, index) {
+                // offset 2 tr
+                $('#tblDetail tr:eq(' + (index + 2) + ')').trigger('click');
+            }
         },
         /**
          * widget's methods
@@ -186,11 +191,11 @@
             if (this.options.form === null && this.options.table === null) {
                 throw new Error('The table or form options must be set.');
             }
-            
+
             this.options.language = $.extend({}, this._LANGUAGE, this.options.language);
-            if(this.options.language.table !== null) {
-                this._TABLE_DEFAULT["oLanguage"] = this.options.language.table; 
-            }     
+            if (this.options.language.table !== null) {
+                this._TABLE_DEFAULT["oLanguage"] = this.options.language.table;
+            }
             this.options.table = $.extend({}, this._TABLE_DEFAULT, this.options.table);
             this.options.buttons = $.extend({}, this.options.buttons, this._BUTTON_DEFAULT);
         },
@@ -207,6 +212,32 @@
             $(html).appendTo(this.element);
             this._table = $('#dataTable');
             this._table.dataTable(this.options.table);
+        },
+        /**
+         * return current data in detail form
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {Object} the current data object in detail form, if no data
+         *         in form ,return empty object
+         */
+        getCurrent : function() {
+            var obj = {};
+            $.each($('.afdui-td-input'), function(index, value) {
+                obj[value.id.slice(7)] = value.value;
+            });
+            return obj;
+        },
+        /**
+         * return selected row data in table
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {Object} the selected data object in table, if no data in
+         *         form ,return empty object
+         */
+        getSelected : function() {
+            return (typeof this._selected_tr === 'object') ? this._table.dataTable().fnGetData(this._selected_tr) : undefined;
         },
         /**
          * conversion raw code to display string
@@ -288,21 +319,6 @@
             this._table.dataTable().fnClearTable();
         },
         /**
-         * get form objects array
-         * 
-         * @function
-         * @private
-         * @memberOf tabledetail#
-         * @return {OBJECT} retrun the form object array
-         */
-        _getFormObj : function() {
-            var obj = {};
-            $.each($('.afdui-td-input'), function(index, value) {
-                obj[value.id.slice(7)] = value;
-            });
-            return obj;
-        },
-        /**
          * Judgment form content is in line with the overall form of a
          * combination of verification
          * 
@@ -312,8 +328,8 @@
          * @memberOf tabledetail#
          */
         _validateForm : function() {
-            if (typeof this.options.formValidator === 'function' && $('.afdui-td-input')[0].disabled === false) {
-                var msg = this.options.formValidator(this._getFormObj());
+            if ($.isFunction(this.options.formValidator) && $('.afdui-td-input')[0].disabled === false) {
+                var msg = this.options.formValidator(this.getCurrent());
                 if (typeof msg === 'string') {
                     var html = '<div id = tblDetailDialog>' + msg + '</div>';
                     $(html).appendTo(this.element);
@@ -715,9 +731,11 @@
                 self._updateDetail(self._selected_tr, id, inputself.value);
             }
 
-            $('#form_message').hide().html(self.options.language.form.sSaving.length === '0' ? 'Saving...' : self.options.language.form.sSaving).slideDown(3000, function() {
-                $(this).hide();
-            });
+            $('#form_message').hide().html(
+                    self.options.language.form.sSaving.length === '0' ? 'Saving...' : self.options.language.form.sSaving)
+                    .slideDown(3000, function() {
+                        $(this).hide();
+                    });
         },
         /**
          * the click event handler of new button
@@ -730,10 +748,10 @@
          */
         _handle_btn_new : function(event) {
             var self = event.data;
-            if(!self._trigger("beforeNewButton", event, null)) {
+            if (!self._trigger("beforeNewButton", event, null)) {
                 return;
-            };
-            var self = event.data;
+            }
+
             if (self._validateForm() === false) {
                 return;
             }
@@ -760,10 +778,10 @@
          */
         _handle_btn_save : function(event) {
             var self = event.data;
-            if(!self._trigger("beforeSaveButton", event, null)) {
+            if (!self._trigger("beforeSaveButton", event, null)) {
                 return;
-            };
-            var self = event.data;
+            }
+
             if (self._validateForm() === false) {
                 return;
             }
@@ -800,12 +818,12 @@
          */
         _handle_btn_delete : function(event) {
             var self = event.data;
-            if(!self._trigger("beforeDeleteButton", event, null)) {
+            if (!self._trigger("beforeDeleteButton", event, null)) {
                 return;
             }
             var deleted = self._table.find('tr.clickedtr');
             var td = self._table.dataTable(), data = td.fnGetData(deleted[0]);
-            if(!self._deleteRemoteAjax(data)) {
+            if (!self._deleteRemoteAjax(data)) {
                 return;
             }
             $('.afdui-td-input').each(function(key, val) {
@@ -830,7 +848,7 @@
          */
         _handle_btn_close : function(event) {
             var self = event.data;
-            if(!self._trigger("beforeCloseButton", event, null)) {
+            if (!self._trigger("beforeCloseButton", event, null)) {
                 return;
             }
             self.destroy();
@@ -888,7 +906,7 @@
                 }
             };
             $.ajax(updateRemoteAjax);
-            if(statusCode !== '200'){
+            if (statusCode !== '200') {
                 return false;
             } else {
                 return true;
@@ -932,7 +950,7 @@
                 }
             };
             $.ajax(deleteRemoteAjax);
-            if(statusCode !== '200'){
+            if (statusCode !== '200') {
                 return false;
             } else {
                 return true;
@@ -976,7 +994,7 @@
                 }
             };
             $.ajax(createRemoteAjax);
-            if(statusCode !== '200'){
+            if (statusCode !== '200') {
                 return false;
             } else {
                 return true;

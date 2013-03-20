@@ -152,7 +152,7 @@
 					},
 					//custom event function have a event args,but others don't have
 					"formValidator" : function(obj) {
-						if ((obj.id.value === obj.name.value) && (obj.id.value.length !== 0 && obj.name.value.length !== 0)) {
+						if ((obj.id === obj.name) && (obj.id.length !== 0 && obj.name.length !== 0)) {
 							return 'The value of id can not same as name value!';
 						}
 					},
