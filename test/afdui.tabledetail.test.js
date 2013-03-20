@@ -294,25 +294,34 @@
         })).done(function(data) {
             var td = tdLoadInit(data);
 
-            // test click event for select first row, update detailed pages
+            // test click event for select first row, update detailed
+            // pages
             td.data("tabledetail")._trigger('rowselect', null, [ 0 ]);
-            ok(td.tabledetail("getSelected").id === td.tabledetail("getCurrent").id, 'the detailed data same as choose data');
+            var selected = td.tabledetail("getSelected");
+            var current = td.tabledetail("getCurrent");
+            ok(selected[0].id === current.id, 'the detailed data same as choose data');
 
             // the show is char，but the data is code，so can't
             // the compare in the html
-            var ret = (td.tabledetail("getData")[0].voltageLevel === $('#detail_voltageLevel').val());
+            var ret = (selected[0].voltageLevel === current.voltageLevel);
             ok(ret, 'the detailed voltageLevel code same as was selected data voltaheLeve code');
 
             // test edit the detailed page is update table
             $('#detail_name').trigger('click');
             $('#detail_name').val('testwasmodifieddata').change();
-            ok($($('#tblDetail tr td')[1]).text() === $('#detail_name').val(), 'modified table data is sync with input');
+            // something change,call get function again.
+            selected = td.tabledetail("getSelected");
+            current = td.tabledetail("getCurrent");
+            ok(selected[0].name === current.name, 'modified table data is sync with input');
 
             // test the detailed pages change select tag is
             // update table
             $('#detail_voltageLevel').val('3').change();
-            var vString = td.tabledetail("getData")[0].voltageLevel;
-            ok(vString === $('#detail_voltageLevel').val(), 'the detailed pages change select tag is update table');
+            // something change,call get function again.
+            selected = td.tabledetail("getSelected");
+            current = td.tabledetail("getCurrent");
+            ret = (selected[0].voltageLevel === current.voltageLevel);
+            ok(ret, 'the detailed pages change select tag is update table');
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");

@@ -233,11 +233,15 @@
          * 
          * @function
          * @memberOf tabledetail#
-         * @return {Object} the selected data object in table, if no data in
-         *         form ,return empty object
+         * @return {Array} the selected data object in table, if no data in form
+         *         ,return empty array
          */
         getSelected : function() {
-            return (typeof this._selected_tr === 'object') ? this._table.dataTable().fnGetData(this._selected_tr) : undefined;
+            var selected = [];
+            if (typeof this._selected_tr === 'object') {
+                selected.push(this._table.dataTable().fnGetData(this._selected_tr));
+            }
+            return this._display2raw(selected);
         },
         /**
          * conversion raw code to display string
