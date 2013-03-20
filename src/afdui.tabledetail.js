@@ -125,6 +125,11 @@
             formValidator : null,
             remoteAjax : null,
             language : null,
+            // handle detail field change event
+            detailchange : function(e, id, value) {
+                $('#detail_' + id).trigger('click');
+                $('#detail_' + id).val(value).change();
+            },
             // handle table row select event
             rowselect : function(e, index) {
                 // offset 2 tr

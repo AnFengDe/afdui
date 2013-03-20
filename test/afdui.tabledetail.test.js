@@ -307,8 +307,7 @@
             ok(ret, 'the detailed voltageLevel code same as was selected data voltaheLeve code');
 
             // test edit the detailed page is update table
-            $('#detail_name').trigger('click');
-            $('#detail_name').val('testwasmodifieddata').change();
+            td.data("tabledetail")._trigger('detailchange',null,['name','testwasmodifieddata']);
             // something change,call get function again.
             selected = td.tabledetail("getSelected");
             current = td.tabledetail("getCurrent");
@@ -316,7 +315,7 @@
 
             // test the detailed pages change select tag is
             // update table
-            $('#detail_voltageLevel').val('3').change();
+            td.data("tabledetail")._trigger('detailchange',null,['voltageLevel','3']);
             // something change,call get function again.
             selected = td.tabledetail("getSelected");
             current = td.tabledetail("getCurrent");
