@@ -347,7 +347,7 @@
             ok(td.data("tabledetail").inputHasClass('name', 'ui-state-error'), 'displays error message');
 
             td.data("tabledetail")._trigger('detailchange', null, ['name', 'test']);
-            ok(false === $('#detail_name').hasClass('ui-state-error'), 'don\'t display the error message');
+            ok(false === td.data("tabledetail").inputHasClass('name', 'ui-state-error'), 'don\'t display the error message');
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
@@ -368,10 +368,9 @@
 
             // click the new button, add a new null tr
             td.data("tabledetail")._trigger('buttonclick', null, 'new');
-            //$('#detail_btn_new').trigger('click');
-
+            var current = td.tabledetail("getCurrent");
             // validator the new data's id is customed
-            ok('2400000' === $('#detail_id').val(), 'show the add customed id');
+            ok('2400000' === current.id, 'show the add customed id');
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
