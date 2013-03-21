@@ -143,7 +143,7 @@
             detailkeypress : function(e, id, value) {
                 var $obj = $('#detail_' + id);
                 $obj.focus().val(value).keypress().blur();
-            },
+            }
         },
         /**
          * widget's methods
@@ -267,6 +267,18 @@
          */
         inputHasClass : function(id,value) {
             return $('#detail_' + id).hasClass(value);
+        },
+        
+        /**
+         * return boolean of button is disabled
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {Boolean} return boolean of button
+         *         is disabled 
+         */
+        buttonIsDisabled : function(id) {
+            return $('#detail_btn_' + id).button('option', 'disabled');
         },
         
         /**

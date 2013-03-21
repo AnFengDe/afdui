@@ -424,17 +424,16 @@
             });
 
             // select one data，checked the function of deleter is valid
-            ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'deletebutton is disabled');
-            // $('#tblDetail tr:eq(2)').trigger('click');
+            ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'deletebutton is disabled');
             td.data("tabledetail")._trigger('rowselect', null, [0]);
-            ok($('#detail_btn_delete').button('option', 'disabled') === false, 'deletebutton is enabled');
+            ok(td.data("tabledetail").buttonIsDisabled('delete') === false, 'deletebutton is enabled');
             // delete,checked the total number of data
             ok(572 === tb.fnSettings().fnRecordsTotal(), 'the data is right before delete');
             td.data("tabledetail")._trigger('buttonclick', null, 'delete');
             //$('#detail_btn_delete').trigger('click');
             setTimeout(function() {
                 ok(571 === tb.fnSettings().fnRecordsTotal(), 'the data is right after delete');
-                ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'deletebutton is disabled');
+                ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'deletebutton is disabled');
 
                 $('#returnDialog').dialog('destroy').remove();
                 td.tabledetail("destroy");
@@ -454,13 +453,13 @@
         })).done(function(data) {
             var td = tdLoadInit(data);
 
-            ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'deletebutton is disabled');
+            ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'deletebutton is disabled');
 
             var tb = $('#dataTable').dataTable();
             tb.fnFilter('5555');
-            $($('#tblDetail tr')[2]).trigger('click');
+            td.data("tabledetail")._trigger('rowselect');
             setTimeout(function() {
-                ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'deletebutton is disabled');
+                ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'deletebutton is disabled');
 
                 $('#returnDialog').dialog('destroy').remove();
                 td.tabledetail("destroy");
