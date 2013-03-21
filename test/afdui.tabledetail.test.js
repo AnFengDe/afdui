@@ -388,22 +388,14 @@
             dataType : "json"
         })).done(function(data) {
             var td = tdLoadInit(data);
-
             td.data("tabledetail")._trigger('rowselect', null, [0]);
-            //$($('#tblDetail tr')[2]).trigger('click');
-
-//            $('#detail_alias').focus();
-            // alias is only number
-//            $('#detail_alias').val('2222').keypress();
-//            $('#detail_alias').blur();
             td.data("tabledetail")._trigger('detailchange', null, ['alias', '2222']);
-            ok($('#detail_alias').val() === '2222', 'the validator mask is number');
-            ok($($('#tblDetail tr td')[2]).text() === '2222', 'the modified numberic was updated to tr');
+            var current = td.tabledetail("getCurrent");
+            var select = td.tabledetail("getSelected");
+            ok(current.alias === '2222', 'the validator mask is number');
+            ok(select[0].alias === '2222', 'the modified numberic was updated to tr');
 
-            $('#detail_alias').focus();
-            $('#detail_alias').val('aaaa').keypress();
-            $('#detail_alias').blur();
-            // td.data("tabledetail")._trigger('detailchange', null, ['alias', 'aaaa']);
+            td.data("tabledetail")._trigger('detailkeypress', null, ['alias', 'aaaa']);
             ok($('#detail_alias').val() === '', 'the validator mask is number');
             ok($($('#tblDetail tr td')[2]).text() === '2222', 'input invalid,the table is not async,remain unchanged');
 

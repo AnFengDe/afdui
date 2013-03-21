@@ -138,7 +138,12 @@
             //handle button click event
             buttonclick : function(e, id) {
                 $('#detail_btn_' + id).trigger('click');
-            }
+            },
+            //handle detail field keypress event
+            detailkeypress : function(e, id, value) {
+                var $obj = $('#detail_' + id);
+                $obj.focus().val(value).keypress().blur();
+            },
         },
         /**
          * widget's methods
