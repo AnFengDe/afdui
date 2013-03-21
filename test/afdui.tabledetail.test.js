@@ -332,7 +332,7 @@
         });
     });
 
-    asyncTest('setting data-input modified data validator', function() {
+    asyncTest('setting data-input, modified data validator', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -340,21 +340,14 @@
             var td = tdLoadInit(data);
 
             // test click event is update detailed pages
-            $('#tblDetail tr:eq(2)').trigger('click');
+            td.data("tabledetail")._trigger('rowselect', null, [ 0 ]);
 
-            // test edit event is update detailed pages
-            $('#detail_name').focus();
-            $('#detail_name').val('');
-            $('#detail_name').trigger('change');
-            $('#detail_alias').focus().delay(1000);
+            td.data("tabledetail")._trigger('detailchange', null, ['name', '']);
+            
+            ok(td.data("tabledetail").inputHasClass('name', 'ui-state-error'), 'displays error message');
 
-            ok($('#detail_name').hasClass('ui-state-error'), 'show the error message');
-
-            $('#detail_name').focus();
-            $('#detail_name').val('test');
-            $('#detail_name').trigger('change');
-            $('#detail_alias').focus();
-            ok(false === $('#detail_name').hasClass('ui-state-error'), 'not show the error message');
+            td.data("tabledetail")._trigger('detailchange', null, ['name', 'test']);
+            ok(false === $('#detail_name').hasClass('ui-state-error'), 'don\'t display the error message');
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
@@ -366,7 +359,7 @@
         });
     });
 
-    asyncTest('setting data-input validator the new null data', function() {
+    asyncTest('setting data-input validator to the new null data', function() {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
@@ -374,7 +367,8 @@
             var td = tdLoadInit(data);
 
             // click the new button, add a new null tr
-            $('#detail_btn_new').trigger('click');
+            td.data("tabledetail")._trigger('buttonclick', null, 'new');
+            //$('#detail_btn_new').trigger('click');
 
             // validator the new data's id is customed
             ok('2400000' === $('#detail_id').val(), 'show the add customed id');
@@ -396,20 +390,23 @@
         })).done(function(data) {
             var td = tdLoadInit(data);
 
-            $($('#tblDetail tr')[2]).trigger('click');
+            td.data("tabledetail")._trigger('rowselect', null, [0]);
+            //$($('#tblDetail tr')[2]).trigger('click');
 
-            $('#detail_alias').focus();
+//            $('#detail_alias').focus();
             // alias is only number
-            $('#detail_alias').val('2222').keypress();
-            $('#detail_alias').blur();
+//            $('#detail_alias').val('2222').keypress();
+//            $('#detail_alias').blur();
+            td.data("tabledetail")._trigger('detailchange', null, ['alias', '2222']);
             ok($('#detail_alias').val() === '2222', 'the validator mask is number');
-            ok($($('#tblDetail tr td')[2]).text() === '2222', 'the modified number is sync to tr');
+            ok($($('#tblDetail tr td')[2]).text() === '2222', 'the modified numberic was updated to tr');
 
             $('#detail_alias').focus();
             $('#detail_alias').val('aaaa').keypress();
             $('#detail_alias').blur();
+            // td.data("tabledetail")._trigger('detailchange', null, ['alias', 'aaaa']);
             ok($('#detail_alias').val() === '', 'the validator mask is number');
-            ok($($('#tblDetail tr td')[2]).text() === '2222', 'input invalid,the table is not sync,remain unchanged');
+            ok($($('#tblDetail tr td')[2]).text() === '2222', 'input invalid,the table is not async,remain unchanged');
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
@@ -437,11 +434,13 @@
 
             // select one data，checked the function of deleter is valid
             ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'deletebutton is disabled');
-            $('#tblDetail tr:eq(2)').trigger('click');
+            // $('#tblDetail tr:eq(2)').trigger('click');
+            td.data("tabledetail")._trigger('rowselect', null, [0]);
             ok($('#detail_btn_delete').button('option', 'disabled') === false, 'deletebutton is enabled');
             // delete,checked the total number of data
             ok(572 === tb.fnSettings().fnRecordsTotal(), 'the data is right before delete');
-            $('#detail_btn_delete').trigger('click');
+            td.data("tabledetail")._trigger('buttonclick', null, 'delete');
+            //$('#detail_btn_delete').trigger('click');
             setTimeout(function() {
                 ok(571 === tb.fnSettings().fnRecordsTotal(), 'the data is right after delete');
                 ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'deletebutton is disabled');

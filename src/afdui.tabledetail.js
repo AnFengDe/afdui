@@ -134,6 +134,10 @@
             rowselect : function(e, index) {
                 // offset 2 tr
                 $('#tblDetail tr:eq(' + (index + 2) + ')').trigger('click');
+            },
+            //handle button click event
+            buttonclick : function(e, id) {
+                $('#detail_btn_' + id).trigger('click');
             }
         },
         /**
@@ -248,6 +252,18 @@
             }
             return this._display2raw(selected);
         },
+        /**
+         * return boolean of input is have class
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {Boolean} return boolean of input
+         *         is have class 
+         */
+        inputHasClass : function(id,value) {
+            return $('#detail_' + id).hasClass(value);
+        },
+        
         /**
          * conversion raw code to display string
          * 
