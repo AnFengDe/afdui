@@ -457,7 +457,7 @@
 
             var tb = $('#dataTable').dataTable();
             tb.fnFilter('5555');
-            td.data("tabledetail")._trigger('rowselect');
+            td.data("tabledetail")._trigger('rowselect', null, [0]);
             setTimeout(function() {
                 ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'deletebutton is disabled');
 
@@ -521,23 +521,25 @@
             tb.fnFilter('55');
             rowCount = tb.fnSettings().fnRecordsDisplay();
             ok(23 === rowCount, 'showing of the 23 entries');
-
-            $($('#tblDetail tr')[2]).trigger('click');
-            var ret = ($($('#tblDetail tr td')[0]).text() === $('#detail_id').val());
+            td.data('tabledetail')._trigger('rowselect', null, [0]);
+            var selected = td.tabledetail("getSelected");
+            var current = td.tabledetail("getCurrent");
+            var ret = (selected[0].id === current.id);
             ok(ret, "the detailed data's id same as the be selected data's id");
 
-            ret = (td.tabledetail("getData")[0].voltageLevel === $('#detail_voltageLevel').val());
+            selected = td.tabledetail("getSelected");
+            current = td.tabledetail("getCurrent");
+            ret = (selected[0].voltageLevel === current.voltageLevel);
             ok(ret, 'the detailed data\'s voltageLevel code same as the be selected data\' voltageLevel code');
 
-            $('#detail_name').trigger('click');
-            $('#detail_name').val('the modefied data of test').change();
-            ok($($('#tblDetail tr td')[1]).text() === $('#detail_name').val(), 'the modefied data sync to table');
+            td.data("tabledetail")._trigger('detailchange',null,['name','the modefied data of test']);
+            ok(td.tabledetail("getSelected")[0].name === td.tabledetail("getCurrent").name, 'the modefied data sync to table');
 
             // modified the data after click the next page button
             tb.fnPageChange('next');
             $('#detail_name').trigger('click');
-            $('#detail_name').val('the modefied data of test').change();
-            ok($($('#tblDetail tr td')[1]).text() === $('#detail_name').val(), 'the modefied data sync to table');
+            td.data("tabledetail")._trigger('detailchange',null,['name','the modefied data of test']);
+            ok(td.tabledetail("getSelected")[0].name === td.tabledetail("getCurrent").name, 'the modefied data sync to table');
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
