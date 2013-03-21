@@ -208,12 +208,19 @@
         td.tabledetail('addData', data);
         return td;
     };
-
-    asyncTest('test the page basic value', function() {
+    var asyncCommon = function(testcase) {
         $.when($.ajax({
             url : "info_line.json",
             dataType : "json"
         })).done(function(data) {
+            testcase(data);
+        }).fail(function() {
+            ok(false, "Load info_line.json is error");
+            start();
+        });
+    };
+    asyncTest('test the page basic value', function() {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             ok(800 === td.tabledetail("option", "width"), "the wigth is right");
@@ -236,18 +243,14 @@
 
             td.tabledetail("destroy");
             start();
-        }).fail(function() {
-            ok(false, "Load info_line.json is error");
-            start();
-        });
+        };
+
+        asyncCommon(testcase);
     });
 
     module('afd Table Detail get set datas');
     asyncTest('setting data-JSON', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             ok(572 === td.tabledetail("getData").length, "The test form data count is right");
@@ -258,19 +261,14 @@
             ok(0 === td.tabledetail("getData").length, "The test form data count is 0");
 
             td.tabledetail("destroy");
+            start();
+        };
 
-            start();
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        asyncCommon(testcase);
     });
 
     asyncTest('setting data-show name by code in form', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             var vString = $($('#tblDetail tr td')[3]).text();
@@ -279,35 +277,28 @@
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
-
             start();
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('setting data-input choose&modified be linked input', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
-            // test click event for select first row, update detailed
-            // pages
+            // test click event for select first row, update detailed pages
             td.data("tabledetail")._trigger('rowselect', null, [ 0 ]);
             var selected = td.tabledetail("getSelected");
             var current = td.tabledetail("getCurrent");
             ok(selected[0].id === current.id, 'the detailed data same as choose data');
 
-            // the show is char，but the data is code，so can't
-            // the compare in the html
+            // the show is char，but the data is code，so can't the compare in the
+            // html
             var ret = (selected[0].voltageLevel === current.voltageLevel);
             ok(ret, 'the detailed voltageLevel code same as was selected data voltaheLeve code');
 
             // test edit the detailed page is update table
-            td.data("tabledetail")._trigger('detailchange',null,['name','testwasmodifieddata']);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'name', 'testwasmodifieddata' ]);
             // something change,call get function again.
             selected = td.tabledetail("getSelected");
             current = td.tabledetail("getCurrent");
@@ -315,7 +306,7 @@
 
             // test the detailed pages change select tag is
             // update table
-            td.data("tabledetail")._trigger('detailchange',null,['voltageLevel','3']);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'voltageLevel', '3' ]);
             // something change,call get function again.
             selected = td.tabledetail("getSelected");
             current = td.tabledetail("getCurrent");
@@ -324,46 +315,36 @@
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
+            start();
+        };
 
-            start();
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        asyncCommon(testcase);
     });
 
     asyncTest('setting data-input, modified data validator', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             // test click event is update detailed pages
             td.data("tabledetail")._trigger('rowselect', null, [ 0 ]);
 
-            td.data("tabledetail")._trigger('detailchange', null, ['name', '']);
-            
+            td.data("tabledetail")._trigger('detailchange', null, [ 'name', '' ]);
+
             ok(td.data("tabledetail").inputHasClass('name', 'ui-state-error'), 'displays error message');
 
-            td.data("tabledetail")._trigger('detailchange', null, ['name', 'test']);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'name', 'test' ]);
             ok(false === td.data("tabledetail").inputHasClass('name', 'ui-state-error'), 'don\'t display the error message');
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
+            start();
+        };
 
-            start();
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        asyncCommon(testcase);
     });
 
     asyncTest('setting data-input validator to the new null data', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             // click the new button, add a new null tr
@@ -374,46 +355,34 @@
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
-
             start();
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('setting data-input validator mask', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
-            td.data("tabledetail")._trigger('rowselect', null, [0]);
-            td.data("tabledetail")._trigger('detailchange', null, ['alias', '2222']);
+            td.data("tabledetail")._trigger('rowselect', null, [ 0 ]);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'alias', '2222' ]);
             var current = td.tabledetail("getCurrent");
             var select = td.tabledetail("getSelected");
             ok(current.alias === '2222', 'the validator mask is number');
             ok(select[0].alias === '2222', 'the modified numberic was updated to tr');
 
-            td.data("tabledetail")._trigger('detailkeypress', null, ['alias', 'aaaa']);
+            td.data("tabledetail")._trigger('detailkeypress', null, [ 'alias', 'aaaa' ]);
             ok($('#detail_alias').val() === '', 'the validator mask is number');
             ok($($('#tblDetail tr td')[2]).text() === '2222', 'input invalid,the table is not async,remain unchanged');
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
-
             start();
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('setting data-input deletedata', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             // deletedata
             var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
             var id = $.mockjax({
@@ -425,12 +394,12 @@
 
             // select one data，checked the function of deleter is valid
             ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'deletebutton is disabled');
-            td.data("tabledetail")._trigger('rowselect', null, [0]);
+            td.data("tabledetail")._trigger('rowselect', null, [ 0 ]);
             ok(td.data("tabledetail").buttonIsDisabled('delete') === false, 'deletebutton is enabled');
             // delete,checked the total number of data
             ok(572 === tb.fnSettings().fnRecordsTotal(), 'the data is right before delete');
             td.data("tabledetail")._trigger('buttonclick', null, 'delete');
-            //$('#detail_btn_delete').trigger('click');
+            // $('#detail_btn_delete').trigger('click');
             setTimeout(function() {
                 ok(571 === tb.fnSettings().fnRecordsTotal(), 'the data is right after delete');
                 ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'deletebutton is disabled');
@@ -440,24 +409,19 @@
                 $.mockjaxClear(id);
                 start();
             }, 1000);
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('setting data-input deletedata-test of delete null tr', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'deletebutton is disabled');
 
             var tb = $('#dataTable').dataTable();
             tb.fnFilter('5555');
-            td.data("tabledetail")._trigger('rowselect', null, [0]);
+            td.data("tabledetail")._trigger('rowselect', null, [ 0 ]);
             setTimeout(function() {
                 ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'deletebutton is disabled');
 
@@ -465,17 +429,12 @@
                 td.tabledetail("destroy");
                 start();
             }, 1000);
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('setting data-input the test of edit select input', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             // enter a new data in the select input
@@ -500,17 +459,12 @@
             td.tabledetail("destroy");
 
             start();
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('setting data-input  edit data the click the next page button', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             var tb = $('#dataTable').dataTable();
@@ -521,7 +475,7 @@
             tb.fnFilter('55');
             rowCount = tb.fnSettings().fnRecordsDisplay();
             ok(23 === rowCount, 'showing of the 23 entries');
-            td.data('tabledetail')._trigger('rowselect', null, [0]);
+            td.data('tabledetail')._trigger('rowselect', null, [ 0 ]);
             var selected = td.tabledetail("getSelected");
             var current = td.tabledetail("getCurrent");
             var ret = (selected[0].id === current.id);
@@ -532,30 +486,25 @@
             ret = (selected[0].voltageLevel === current.voltageLevel);
             ok(ret, 'the detailed data\'s voltageLevel code same as the be selected data\' voltageLevel code');
 
-            td.data("tabledetail")._trigger('detailchange',null,['name','the modefied data of test']);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'name', 'the modefied data of test' ]);
             ok(td.tabledetail("getSelected")[0].name === td.tabledetail("getCurrent").name, 'the modefied data sync to table');
 
             // modified the data after click the next page button
             tb.fnPageChange('next');
-            td.data("tabledetail")._trigger('detailchange',null,['name','the modefied data of test']);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'name', 'the modefied data of test' ]);
             ok(td.tabledetail("getSelected")[0].name === td.tabledetail("getCurrent").name, 'the modefied data sync to table');
 
             $('#returnDialog').dialog('destroy').remove();
             td.tabledetail("destroy");
 
             start();
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     module('afd Table Detail customize event');
     asyncTest('the message of custom delete event', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
 
             var id = $.mockjax({
@@ -563,7 +512,7 @@
                 status : 404
             });
 
-            td.data("tabledetail")._trigger('rowselect',null,[7]);
+            td.data("tabledetail")._trigger('rowselect', null, [ 7 ]);
             td.data("tabledetail")._trigger('buttonclick', null, 'delete');
 
             setTimeout(function() {
@@ -576,17 +525,12 @@
                 $.mockjaxClear(id);
                 start();
             }, 1000);
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('the message of custom edit event', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             var id = $.mockjax({
@@ -596,8 +540,8 @@
                 }
             });
 
-            td.data("tabledetail")._trigger('rowselect',null,[6]);
-            td.data("tabledetail")._trigger('detailchange',null,['name','hefeiTransform']);
+            td.data("tabledetail")._trigger('rowselect', null, [ 6 ]);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'name', 'hefeiTransform' ]);
             td.data("tabledetail")._trigger('buttonclick', null, 'save');
 
             setTimeout(function() {
@@ -610,17 +554,12 @@
                 $.mockjaxClear(id);
                 start();
             }, 1000);
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('the message of custom create event', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             var id = $.mockjax({
@@ -631,7 +570,7 @@
             });
 
             td.data("tabledetail")._trigger('buttonclick', null, 'new');
-            td.data("tabledetail")._trigger('detailchange',null,['name','hefeiTransform']);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'name', 'hefeiTransform' ]);
 
             td.data("tabledetail")._trigger('buttonclick', null, 'save');
 
@@ -646,17 +585,12 @@
                 $.mockjaxClear(id);
                 start();
             }, 1000);
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('the message of custom select input event', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
 
             // trigger the select input event
@@ -668,17 +602,12 @@
             td.tabledetail("destroy");
 
             start();
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('the message of custom tr hover', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = tdLoadInit(data);
             // trigger mouseenter event
             $('#tblDetail tr :eq(2)').trigger('mouseenter');
@@ -689,135 +618,111 @@
             td.tabledetail("destroy");
 
             start();
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+        };
+        asyncCommon(testcase);
     });
 
     module('afd Table Detail remote ');
     asyncTest('delete the data of table and ajax to remote', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(
-                function(data) {
-                    var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
+        var testcase = function(data) {
+            var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
 
-                    var id = $.mockjax({
-                        url : "/powerflow/api/config/devices/buses/240000001",
-                        responseText : {
-                            status : 'success'
-                        }
-                    });
-                    
-                    td.data("tabledetail")._trigger("rowselect", null, [0]);
-                    td.data("tabledetail")._trigger('buttonclick', null, 'delete');
-                    
-                    setTimeout(function() {
-                        ok($('#returnDialog').find('p')[0].innerHTML === 'Remove Data Success!',
-                                'the value of return from remote is right');
-                        ok(571 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after delete');
-                        ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'Delete button is disabled');
+            var id = $.mockjax({
+                url : "/powerflow/api/config/devices/buses/240000001",
+                responseText : {
+                    status : 'success'
+                }
+            });
 
-                        $('#returnDialog').dialog('destroy').remove();
-                        td.tabledetail("destroy");
+            td.data("tabledetail")._trigger("rowselect", null, [ 0 ]);
+            td.data("tabledetail")._trigger('buttonclick', null, 'delete');
 
-                        $.mockjaxClear(id);
-                        start();
-                    }, 1000);
-                }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+            setTimeout(function() {
+                ok($('#returnDialog').find('p')[0].innerHTML === 'Remove Data Success!',
+                        'the value of return from remote is right');
+                ok(571 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after delete');
+                ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'Delete button is disabled');
+
+                $('#returnDialog').dialog('destroy').remove();
+                td.tabledetail("destroy");
+
+                $.mockjaxClear(id);
+                start();
+            }, 1000);
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('edit the data of table and ajax to remote', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(
-                function(data) {
-                    var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
+        var testcase = function(data) {
+            var td = tdLoadInit(data), tb = $('#dataTable').dataTable();
 
-                    var id = $.mockjax({
-                        url : "/powerflow/api/config/devices/buses/hefeiTransformed",
-                        responseText : {
-                            status : 'success'
-                        }
-                    });
+            var id = $.mockjax({
+                url : "/powerflow/api/config/devices/buses/hefeiTransformed",
+                responseText : {
+                    status : 'success'
+                }
+            });
 
-                    
-                    td.data("tabledetail")._trigger("rowselect", null, [1]);
-                    td.data("tabledetail")._trigger("detailchange", null, ['name', 'hefeiTransformed']);
-                    td.data("tabledetail")._trigger('buttonclick', null, 'save');
+            td.data("tabledetail")._trigger("rowselect", null, [ 1 ]);
+            td.data("tabledetail")._trigger("detailchange", null, [ 'name', 'hefeiTransformed' ]);
+            td.data("tabledetail")._trigger('buttonclick', null, 'save');
 
-                    setTimeout(function() {
-                        ok($('#returnDialog').find('p')[0].innerHTML === 'Update Data Success!',
-                                'the value of return from remote is right');
-                        ok(572 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after edit');
-                        var ret = (td.data("tabledetail").buttonIsDisabled('save') !== false);
-                        ok(ret, 'delete button is disabled');
+            setTimeout(function() {
+                var ret = ($('#returnDialog').find('p')[0].innerHTML === 'Update Data Success!');
+                ok(ret, 'the value of return from remote is right');
+                ok(572 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after edit');
+                ret = (td.data("tabledetail").buttonIsDisabled('save') !== false);
+                ok(ret, 'delete button is disabled');
 
-                        $('#returnDialog').dialog('destroy').remove();
-                        td.tabledetail("destroy");
+                $('#returnDialog').dialog('destroy').remove();
+                td.tabledetail("destroy");
 
-                        $.mockjaxClear(id);
-                        start();
-                    }, 1000);
-                }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+                $.mockjaxClear(id);
+                start();
+            }, 1000);
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('create the data of table and ajax to remote', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(
-                function(data) {
-                    var td = $('#tblDetail').tabledetail(testOptions);
-                    td.tabledetail('addData', data);
-                    var tb = $('#dataTable').dataTable();
+        var testcase = function(data) {
+            var td = $('#tblDetail').tabledetail(testOptions);
+            td.tabledetail('addData', data);
+            var tb = $('#dataTable').dataTable();
 
-                    var id = $.mockjax({
-                        url : "/powerflow/api/config/devices/buses/new",
-                        responseText : {
-                            status : 'success'
-                        }
-                    });
+            var id = $.mockjax({
+                url : "/powerflow/api/config/devices/buses/new",
+                responseText : {
+                    status : 'success'
+                }
+            });
 
-                    // click the newbutton, enter two value of
-                    // new input and trigger the change event
-                    td.data("tabledetail")._trigger('buttonclick', null, 'new');
-                    td.data("tabledetail")._trigger("detailchange", null, ['id', '2222222']);
-                    td.data("tabledetail")._trigger("detailchange", null, ['name', 'hefeiTransformed']);
+            // click the newbutton, enter two value of
+            // new input and trigger the change event
+            td.data("tabledetail")._trigger('buttonclick', null, 'new');
+            td.data("tabledetail")._trigger("detailchange", null, [ 'id', '2222222' ]);
+            td.data("tabledetail")._trigger("detailchange", null, [ 'name', 'hefeiTransformed' ]);
 
-                    td.data("tabledetail")._trigger('buttonclick', null, 'save');
-                    setTimeout(function() {
-                        ok($('#returnDialog').find('p')[0].innerHTML === 'Create Data Success',
-                                'the value of return from remote is right');
-                        ok(573 === tb.fnSettings().fnRecordsTotal(), 'the data number is right after create');
-                        ok($('#detail_btn_save').button('option', 'disabled') !== false, 'deletebutton is disabled');
+            td.data("tabledetail")._trigger('buttonclick', null, 'save');
+            setTimeout(function() {
+                ok($('#returnDialog').find('p')[0].innerHTML === 'Create Data Success',
+                        'the value of return from remote is right');
+                ok(573 === tb.fnSettings().fnRecordsTotal(), 'the data number is right after create');
+                ok($('#detail_btn_save').button('option', 'disabled') !== false, 'deletebutton is disabled');
 
-                        $('#returnDialog').dialog('destroy').remove();
-                        td.tabledetail("destroy");
+                $('#returnDialog').dialog('destroy').remove();
+                td.tabledetail("destroy");
 
-                        $.mockjaxClear(id);
-                        start();
-                    }, 1000);
-                }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
+                $.mockjaxClear(id);
+                start();
+            }, 1000);
+        };
+        asyncCommon(testcase);
     });
 
     asyncTest('edit the different of tr value and ajax to remote', function() {
-        $.when($.ajax({
-            url : "info_line.json",
-            dataType : "json"
-        })).done(function(data) {
+        var testcase = function(data) {
             var td = $('#tblDetail').tabledetail(testOptions);
             td.tabledetail('addData', data);
             var tb = $('#dataTable').dataTable();
@@ -835,12 +740,12 @@
                 }
             });
             // modified the value of fifth tr data
-            td.data("tabledetail")._trigger('rowselect', null, ['3']);
-            td.data("tabledetail")._trigger('detailchange', null, ['name', 'huaibeiTransformed']);
+            td.data("tabledetail")._trigger('rowselect', null, [ '3' ]);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'name', 'huaibeiTransformed' ]);
             // add a new tr
             td.data("tabledetail")._trigger('buttonclick', null, 'new');
-            td.data("tabledetail")._trigger('detailchange', null, ['id', '240000002']);
-            td.data("tabledetail")._trigger('detailchange', null, ['name', 'huaibeiTransformed']);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'id', '240000002' ]);
+            td.data("tabledetail")._trigger('detailchange', null, [ 'name', 'huaibeiTransformed' ]);
             // click the save button
             td.data("tabledetail")._trigger('buttonclick', null, 'save');
 
@@ -857,10 +762,7 @@
                 $.mockjaxClear(id2);
                 start();
             }, 1000);
-        }).fail(function() {
-            ok(false, "Load tabledetail_options_test.json is error");
-            start();
-        });
-
+        };
+        asyncCommon(testcase);
     });
 }(jQuery));
