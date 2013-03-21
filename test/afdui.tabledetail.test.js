@@ -537,7 +537,6 @@
 
             // modified the data after click the next page button
             tb.fnPageChange('next');
-            $('#detail_name').trigger('click');
             td.data("tabledetail")._trigger('detailchange',null,['name','the modefied data of test']);
             ok(td.tabledetail("getSelected")[0].name === td.tabledetail("getCurrent").name, 'the modefied data sync to table');
 
@@ -564,8 +563,8 @@
                 status : 404
             });
 
-            $('#tblDetail tr:eq(9)').trigger('click');
-            $('#detail_btn_delete').trigger('click');
+            td.data("tabledetail")._trigger('rowselect',null,[7]);
+            td.data("tabledetail")._trigger('buttonclick', null, 'delete');
 
             setTimeout(function() {
                 var $returnDialog = $('#returnDialog');
@@ -597,9 +596,9 @@
                 }
             });
 
-            $('#tblDetail tr:eq(8)').trigger('click');
-            $('#detail_name').val('hefeiTransform').trigger('change');
-            $('#detail_btn_save').trigger('click');
+            td.data("tabledetail")._trigger('rowselect',null,[6]);
+            td.data("tabledetail")._trigger('detailchange',null,['name','hefeiTransform']);
+            td.data("tabledetail")._trigger('buttonclick', null, 'save');
 
             setTimeout(function() {
                 var $returnDialog = $('#returnDialog');
@@ -631,11 +630,10 @@
                 }
             });
 
-            $('#detail_btn_new').trigger('click');
-            $('#detail_name').val('2400000002').trigger('change');
-            $('#detail_name').val('hefeitransformed').trigger('change');
+            td.data("tabledetail")._trigger('buttonclick', null, 'new');
+            td.data("tabledetail")._trigger('detailchange',null,['name','hefeiTransform']);
 
-            $('#detail_btn_save').trigger('click');
+            td.data("tabledetail")._trigger('buttonclick', null, 'save');
 
             setTimeout(function() {
                 var $returnDialog = $('#returnDialog');
@@ -712,15 +710,15 @@
                             status : 'success'
                         }
                     });
-
-                    $($('#tblDetail tr')[2]).trigger('click');
-                    $('#detail_btn_delete').trigger('click');
+                    
+                    td.data("tabledetail")._trigger("rowselect", null, [0]);
+                    td.data("tabledetail")._trigger('buttonclick', null, 'delete');
+                    
                     setTimeout(function() {
-
                         ok($('#returnDialog').find('p')[0].innerHTML === 'Remove Data Success!',
                                 'the value of return from remote is right');
                         ok(571 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after delete');
-                        ok($('#detail_btn_delete').button('option', 'disabled') !== false, 'Delete button is disabled');
+                        ok(td.data("tabledetail").buttonIsDisabled('delete') !== false, 'Delete button is disabled');
 
                         $('#returnDialog').dialog('destroy').remove();
                         td.tabledetail("destroy");
@@ -749,15 +747,16 @@
                         }
                     });
 
-                    $('#tblDetail tr :eq(3)').trigger('click');
-                    $('#detail_name').val('hefeiTransformed').trigger('change');
+                    
+                    td.data("tabledetail")._trigger("rowselect", null, [1]);
+                    td.data("tabledetail")._trigger("detailchange", null, ['name', 'hefeiTransformed']);
+                    td.data("tabledetail")._trigger('buttonclick', null, 'save');
 
-                    $('#detail_btn_save').trigger('click');
                     setTimeout(function() {
                         ok($('#returnDialog').find('p')[0].innerHTML === 'Update Data Success!',
                                 'the value of return from remote is right');
                         ok(572 === tb.fnSettings().fnRecordsTotal(), 'The data count is right after edit');
-                        var ret = ($('#detail_btn_save').button('option', 'disabled') !== false);
+                        var ret = (td.data("tabledetail").buttonIsDisabled('save') !== false);
                         ok(ret, 'delete button is disabled');
 
                         $('#returnDialog').dialog('destroy').remove();
@@ -791,11 +790,11 @@
 
                     // click the newbutton, enter two value of
                     // new input and trigger the change event
-                    $('#detail_btn_new').trigger('click');
-                    $('#detail_name').val('2400000002').trigger('change');
-                    $('#detail_name').val('the transformed of hefei').trigger('change');
+                    td.data("tabledetail")._trigger('buttonclick', null, 'new');
+                    td.data("tabledetail")._trigger("detailchange", null, ['id', '2222222']);
+                    td.data("tabledetail")._trigger("detailchange", null, ['name', 'hefeiTransformed']);
 
-                    $('#detail_btn_save').trigger('click');
+                    td.data("tabledetail")._trigger('buttonclick', null, 'save');
                     setTimeout(function() {
                         ok($('#returnDialog').find('p')[0].innerHTML === 'Create Data Success',
                                 'the value of return from remote is right');
@@ -823,21 +822,6 @@
             td.tabledetail('addData', data);
             var tb = $('#dataTable').dataTable();
 
-            // var remoteRet = [];
-            // var id = $.mockjax(function(settings) {
-            // var ret1 = (settings.type === 'POST');
-            // ret1 = ret1 && (settings.url ===
-            // '/powerflow/api/config/devices/buses/new');
-            // var ret2 = (settings.type === 'PUT');
-            // ret2 = ret2 && (settings.url ===
-            // '/powerflow/api/config/devices/buses/huaibeiTransformed');
-            // if (ret1 || ret2) {
-            // remoteRet.push(true);
-            // } else {
-            // remoteRet.push(false);
-            // }
-            // });
-
             var id1 = $.mockjax({
                 url : "/powerflow/api/config/devices/buses/new",
                 responseText : {
@@ -850,22 +834,21 @@
                     status : 'success'
                 }
             });
-
             // modified the value of fifth tr data
-            $('#tblDetail tr :eq(5)').trigger('click');
-            $('#detail_name').val('huaibeiTransformed').trigger('change');
+            td.data("tabledetail")._trigger('rowselect', null, ['3']);
+            td.data("tabledetail")._trigger('detailchange', null, ['name', 'huaibeiTransformed']);
             // add a new tr
-            $('#detail_btn_new').trigger('click');
-            $('#detail_id').val('240000002').trigger('change');
-            $('#detail_name').val('hefeiTransformed').trigger('change');
+            td.data("tabledetail")._trigger('buttonclick', null, 'new');
+            td.data("tabledetail")._trigger('detailchange', null, ['id', '240000002']);
+            td.data("tabledetail")._trigger('detailchange', null, ['name', 'huaibeiTransformed']);
             // click the save button
-            $('#detail_btn_save').trigger('click');
+            td.data("tabledetail")._trigger('buttonclick', null, 'save');
 
             setTimeout(function() {
                 // ok(remoteRet[0] && remoteRet[1], 'the value of return from
                 // remote is right');
                 ok(573 === tb.fnSettings().fnRecordsTotal(), 'the data number is right after create');
-                ok($('#detail_btn_save').button('option', 'disabled') !== false, 'deletebutton is disabled');
+                ok(td.data("tabledetail").buttonIsDisabled('save') !== false, 'save button is disabled');
 
                 $('#returnDialog').dialog('destroy').remove();
                 td.tabledetail("destroy");
