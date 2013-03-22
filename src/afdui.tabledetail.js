@@ -85,7 +85,6 @@
          */
         _LANGUAGE : {
             "table" : {
-
             },
             "form" : {
                 "sSaving" : "",
