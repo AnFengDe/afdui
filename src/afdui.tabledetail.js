@@ -143,6 +143,16 @@
             detailkeypress : function(e, id, value) {
                 var $obj = $('#detail_' + id);
                 $obj.focus().val(value).keypress().blur();
+            },
+            //handle row mouse leave event
+            rowleave : function(e, index) {
+                // offset 2 tr
+                $('#tblDetail tr:eq(' + (index + 2) + ')').trigger('mouseleave');
+            },
+            //hadle row mouse enter event
+            rowenter : function(e, index) {
+                // offset 2 tr
+                $('#tblDetail tr:eq(' + (index + 2) + ')').trigger('mouseenter');
             }
         },
         /**
@@ -280,7 +290,19 @@
         buttonIsDisabled : function(id) {
             return $('#detail_btn_' + id).button('option', 'disabled');
         },
-        
+        /**
+         * return row css style in table
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {object} the row css style in table, if no data in form
+         *         ,return empty object
+         */
+        getRowStyle : function(index) {
+         // offset 2 tr
+         return $('#tblDetail tr :eq('+ (index + 2) +')')[0].style;   
+        },
+
         /**
          * conversion raw code to display string
          * 
