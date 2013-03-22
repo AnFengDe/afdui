@@ -156,9 +156,10 @@
             }
         },
         /**
-         * widget's methods
+         * create widget's methods
          * 
          * @construct
+         * @private
          * @memberOf tabledetail#
          */
         _create : function() {
@@ -183,8 +184,10 @@
 
         },
         /**
-         * destroy method
+         * Destroy the all DOM elements in the dialog  
+         * and unbinds event listeners.
          * 
+         * @construct
          * @memberOf tabledetail#
          */
         destroy : function() {
@@ -195,6 +198,7 @@
 
             // clean the message of showing
             $('.ui-tooltip').remove();
+            this._table.dataTable().fnDestroy().remove();
             $('#tblDetailDialog').dialog('destroy').remove();
 
             this._table.remove();
@@ -209,6 +213,7 @@
          * 
          * @private
          * @function
+         * @construct
          * @memberOf tabledetail#
          */
         _setOption : function() {
@@ -228,6 +233,7 @@
          * 
          * @private
          * @function
+         * @private
          * @memberOf tabledetail#
          */
         _buildTable : function() {
@@ -290,13 +296,15 @@
         buttonIsDisabled : function(id) {
             return $('#detail_btn_' + id).button('option', 'disabled');
         },
+        
         /**
          * return row css style in table
          * 
          * @function
          * @memberOf tabledetail#
-         * @return {object} the row css style in table, if no data in form
-         *         ,return empty object
+         * @return {Object} the row css style in table, 
+         *             if no data in form,
+         *             return empty object
          */
         getRowStyle : function(index) {
          // offset 2 tr
@@ -307,6 +315,7 @@
          * conversion raw code to display string
          * 
          * @function
+         * @private
          * @memberOf tabledetail#
          * @param {JSON}
          *            raw raw data
@@ -352,10 +361,10 @@
             return raw;
         },
         /**
-         * add data to widget, must be json object or json object array
+         * add data into table, the data must be the object of 
+         * Json or the object of Json-array
          * 
          * @function
-         * @private
          * @memberOf tabledetail#
          * @param {JSON|ARRAY}
          *            data json object or json object array
@@ -364,17 +373,19 @@
             this._table.dataTable().fnAddData(this._raw2display(data));
         },
         /**
-         * get the data of widget
+         * get the data from table
          * 
          * @function
          * @memberOf tabledetail#
-         * @return {ARRAY} data json object data or json object array
+         * @return {ARRAY} 
+         *            return the object of Json  
+         *            or the object of Json-array
          */
         getData : function() {
             return this._display2raw(this._table.fnGetData());
         },
         /**
-         * clean the data of widget
+         * clean the table's data
          * 
          * @function
          * @memberOf tabledetail#
@@ -383,7 +394,8 @@
             this._table.dataTable().fnClearTable();
         },
         /**
-         * Judgment form content is in line with the overall form of a
+         * Judgment form content is in line with 
+         * the overall form of a
          * combination of verification
          * 
          * @function
