@@ -199,12 +199,15 @@
             // clean the message of showing
             $('.ui-tooltip').remove();
             this._table.dataTable().fnDestroy();
+            $('#dataTable.dataTable').remove();
             $('#tblDetailDialog').dialog('destroy').remove();
-
+            
+            $('.ui-widget-overlay').remove();
             this._table.remove();
-
+            this._tabs.tabs("destroy").remove();
             $.ui.dialog.prototype.destroy.apply(this);
             this._unbindEvents();
+            
         },
 
         /**
