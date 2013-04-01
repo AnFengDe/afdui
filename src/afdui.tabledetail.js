@@ -184,7 +184,7 @@
 
         },
         /**
-         * Destroy the all DOM elements in the dialog  
+         * destroy the all DOM elements in the dialog  
          * and unbinds event listeners.
          * 
          * @construct
@@ -198,7 +198,7 @@
 
             // clean the message of showing
             $('.ui-tooltip').remove();
-            this._table.dataTable().fnDestroy().remove();
+            this._table.dataTable().fnDestroy();
             $('#tblDetailDialog').dialog('destroy').remove();
 
             this._table.remove();
