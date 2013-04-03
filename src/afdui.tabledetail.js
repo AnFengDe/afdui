@@ -142,12 +142,23 @@
             detailkeypress : function(e, id, value) {
                 var $obj = $('#detail_' + id);
                 $obj.focus().val(value).keypress().blur();
+            },
+            //handle row mouse leave event
+            rowleave : function(e, index) {
+                // offset 2 tr
+                $('#tblDetail tr:eq(' + (index + 2) + ')').trigger('mouseleave');
+            },
+            //hadle row mouse enter event
+            rowenter : function(e, index) {
+                // offset 2 tr
+                $('#tblDetail tr:eq(' + (index + 2) + ')').trigger('mouseenter');
             }
         },
         /**
-         * widget's methods
+         * create widget's methods
          * 
          * @construct
+         * @private
          * @memberOf tabledetail#
          */
         _create : function() {
@@ -172,8 +183,10 @@
 
         },
         /**
-         * destroy method
+         * destroy the all DOM elements in the dialog  
+         * and unbinds event listeners.
          * 
+         * @construct
          * @memberOf tabledetail#
          */
         destroy : function() {
@@ -184,12 +197,16 @@
 
             // clean the message of showing
             $('.ui-tooltip').remove();
+            this._table.dataTable().fnDestroy();
+            $('#dataTable.dataTable').remove();
             $('#tblDetailDialog').dialog('destroy').remove();
-
+            
+            $('.ui-widget-overlay').remove();
             this._table.remove();
-
+            this._tabs.tabs("destroy").remove();
             $.ui.dialog.prototype.destroy.apply(this);
             this._unbindEvents();
+            
         },
 
         /**
@@ -198,6 +215,7 @@
          * 
          * @private
          * @function
+         * @construct
          * @memberOf tabledetail#
          */
         _setOption : function() {
@@ -217,6 +235,7 @@
          * 
          * @private
          * @function
+         * @private
          * @memberOf tabledetail#
          */
         _buildTable : function() {
@@ -281,9 +300,24 @@
         },
         
         /**
+         * return row css style in table
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {Object} the row css style in table, 
+         *             if no data in form,
+         *             return empty object
+         */
+        getRowStyle : function(index) {
+         // offset 2 tr
+         return $('#tblDetail tr :eq('+ (index + 2) +')')[0].style;   
+        },
+
+        /**
          * conversion raw code to display string
          * 
          * @function
+         * @private
          * @memberOf tabledetail#
          * @param {JSON}
          *            raw raw data
@@ -329,10 +363,10 @@
             return raw;
         },
         /**
-         * add data to widget, must be json object or json object array
+         * add data into table, the data must be the object of 
+         * Json or the object of Json-array
          * 
          * @function
-         * @private
          * @memberOf tabledetail#
          * @param {JSON|ARRAY}
          *            data json object or json object array
@@ -341,17 +375,19 @@
             this._table.dataTable().fnAddData(this._raw2display(data));
         },
         /**
-         * get the data of widget
+         * get the data from table
          * 
          * @function
          * @memberOf tabledetail#
-         * @return {ARRAY} data json object data or json object array
+         * @return {ARRAY} 
+         *            return the object of Json  
+         *            or the object of Json-array
          */
         getData : function() {
             return this._display2raw(this._table.fnGetData());
         },
         /**
-         * clean the data of widget
+         * clean the table's data
          * 
          * @function
          * @memberOf tabledetail#
@@ -360,7 +396,8 @@
             this._table.dataTable().fnClearTable();
         },
         /**
-         * Judgment form content is in line with the overall form of a
+         * Judgment form content is in line with 
+         * the overall form of a
          * combination of verification
          * 
          * @function

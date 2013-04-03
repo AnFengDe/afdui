@@ -610,11 +610,11 @@
         var testcase = function(data) {
             var td = tdLoadInit(data);
             // trigger mouseenter event
-            $('#tblDetail tr :eq(2)').trigger('mouseenter');
-            ok($('#tblDetail tr :eq(2)')[0].style.color === 'red', 'the tr\'s color changed to red after mouseenter');
+            td.data('tabledetail')._trigger('rowenter', null, [0]);
+            ok(td.data('tabledetail').getRowStyle([0]).color === 'red', 'the tr\'s color changed to red after mouseenter');
             // trigger mouseleave event
-            $('#tblDetail tr :eq(2)').trigger('mouseleave');
-            ok($('#tblDetail tr :eq(2)')[0].style.color === 'black', 'the tr\'s color changed to black after mouseleave');
+            td.data('tabledetail')._trigger('rowleave', null, [0]);
+            ok(td.data('tabledetail').getRowStyle([0]).color === 'black', 'the tr\'s color changed to black after mouseleave');
             td.tabledetail("destroy");
 
             start();
