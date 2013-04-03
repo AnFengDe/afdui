@@ -110,29 +110,14 @@
          * 
          * @private
          */
-        _LANGUAGE : { 
+        _LANGUAGE : {
             "table" : {
-                "sProcessing" : "",
-                "sLengthMenu" : "",
-                "sZeroRecords" : "",
-                "sInfo" : "",
-                "sInfoEmpty" : "",
-                "sInfoFiltered" : "",
-                "sInfoPostFix" : "",
-                "sSearch" : "",
-                "sUrl" : "",
-                "oPaginate" : {
-                    "sFirst" : "",
-                    "sPrevious" : "",
-                    "sNext" : "",
-                    "sLast" : ""
-                    }
-                },
+            },
             "form" : {
                 "sSaving" : "",
-            }    
+            }
         },
-        
+
         /**
          * @name tableDetailOptions
          * @description tabledetail options
@@ -165,12 +150,42 @@
             form : null,
             formValidator : null,
             remoteAjax : null,
-            language : null
+            language : null,
+            // handle detail field change event
+            detailchange : function(e, id, value) {
+                $('#detail_' + id).trigger('click');
+                $('#detail_' + id).val(value).change();
+            },
+            // handle table row select event
+            rowselect : function(e, index) {
+                // offset 2 tr
+                $('#tblDetail tr:eq(' + (index + 2) + ')').trigger('click');
+            },
+            //handle button click event
+            buttonclick : function(e, id) {
+                $('#detail_btn_' + id).trigger('click');
+            },
+            //handle detail field keypress event
+            detailkeypress : function(e, id, value) {
+                var $obj = $('#detail_' + id);
+                $obj.focus().val(value).keypress().blur();
+            },
+            //handle row mouse leave event
+            rowleave : function(e, index) {
+                // offset 2 tr
+                $('#tblDetail tr:eq(' + (index + 2) + ')').trigger('mouseleave');
+            },
+            //hadle row mouse enter event
+            rowenter : function(e, index) {
+                // offset 2 tr
+                $('#tblDetail tr:eq(' + (index + 2) + ')').trigger('mouseenter');
+            }
         },
         /**
-         * widget's methods
+         * create widget's methods
          * 
          * @construct
+         * @private
          * @memberOf tabledetail#
          */
         _create : function() {
@@ -195,8 +210,10 @@
 
         },
         /**
-         * destroy method
+         * destroy the all DOM elements in the dialog  
+         * and unbinds event listeners.
          * 
+         * @construct
          * @memberOf tabledetail#
          */
         destroy : function() {
@@ -207,12 +224,16 @@
 
             // clean the message of showing
             $('.ui-tooltip').remove();
+            this._table.dataTable().fnDestroy();
+            $('#dataTable.dataTable').remove();
             $('#tblDetailDialog').dialog('destroy').remove();
-
+            
+            $('.ui-widget-overlay').remove();
             this._table.remove();
-
+            this._tabs.tabs("destroy").remove();
             $.ui.dialog.prototype.destroy.apply(this);
             this._unbindEvents();
+            
         },
 
         /**
@@ -221,16 +242,18 @@
          * 
          * @private
          * @function
+         * @construct
          * @memberOf tabledetail#
          */
         _setOption : function() {
             if (this.options.form === null && this.options.table === null) {
                 throw new Error('The table or form options must be set.');
             }
-            
-            this.options.language = $.extend({}, this._LANGUAGE, this.options.language);
-            this._TABLE_DEFAULT["oLanguage"] = this.options.language.table; 
 
+            this.options.language = $.extend({}, this._LANGUAGE, this.options.language);
+            if (this.options.language.table !== null) {
+                this._TABLE_DEFAULT["oLanguage"] = this.options.language.table;
+            }
             this.options.table = $.extend({}, this._TABLE_DEFAULT, this.options.table);
             this.options.buttons = $.extend({}, this.options.buttons, this._BUTTON_DEFAULT);
         },
@@ -239,6 +262,7 @@
          * 
          * @private
          * @function
+         * @private
          * @memberOf tabledetail#
          */
         _buildTable : function() {
@@ -249,9 +273,78 @@
             this._table.dataTable(this.options.table);
         },
         /**
+         * return current data in detail form
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {Object} the current data object in detail form, if no data
+         *         in form ,return empty object
+         */
+        getCurrent : function() {
+            var obj = {};
+            $.each($('.afdui-td-input'), function(index, value) {
+                obj[value.id.slice(7)] = value.value;
+            });
+            return obj;
+        },
+        /**
+         * return selected row data in table
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {Array} the selected data object in table, if no data in form
+         *         ,return empty array
+         */
+        getSelected : function() {
+            var selected = [];
+            if (typeof this._selected_tr === 'object') {
+                selected.push(this._table.dataTable().fnGetData(this._selected_tr));
+            }
+            return this._display2raw(selected);
+        },
+        /**
+         * return boolean of input is have class
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {Boolean} return boolean of input
+         *         is have class 
+         */
+        inputHasClass : function(id,value) {
+            return $('#detail_' + id).hasClass(value);
+        },
+        
+        /**
+         * return boolean of button is disabled
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {Boolean} return boolean of button
+         *         is disabled 
+         */
+        buttonIsDisabled : function(id) {
+            return $('#detail_btn_' + id).button('option', 'disabled');
+        },
+        
+        /**
+         * return row css style in table
+         * 
+         * @function
+         * @memberOf tabledetail#
+         * @return {Object} the row css style in table, 
+         *             if no data in form,
+         *             return empty object
+         */
+        getRowStyle : function(index) {
+         // offset 2 tr
+         return $('#tblDetail tr :eq('+ (index + 2) +')')[0].style;   
+        },
+
+        /**
          * conversion raw code to display string
          * 
          * @function
+         * @private
          * @memberOf tabledetail#
          * @param {JSON}
          *            raw raw data
@@ -297,10 +390,10 @@
             return raw;
         },
         /**
-         * add data to widget, must be json object or json object array
+         * add data into table, the data must be the object of 
+         * Json or the object of Json-array
          * 
          * @function
-         * @private
          * @memberOf tabledetail#
          * @param {JSON|ARRAY}
          *            data json object or json object array
@@ -309,17 +402,19 @@
             this._table.dataTable().fnAddData(this._raw2display(data));
         },
         /**
-         * get the data of widget
+         * get the data from table
          * 
          * @function
          * @memberOf tabledetail#
-         * @return {ARRAY} data json object data or json object array
+         * @return {ARRAY} 
+         *            return the object of Json  
+         *            or the object of Json-array
          */
         getData : function() {
             return this._display2raw(this._table.fnGetData());
         },
         /**
-         * clean the data of widget
+         * clean the table's data
          * 
          * @function
          * @memberOf tabledetail#
@@ -328,22 +423,8 @@
             this._table.dataTable().fnClearTable();
         },
         /**
-         * get form objects array
-         * 
-         * @function
-         * @private
-         * @memberOf tabledetail#
-         * @return {OBJECT} retrun the form object array
-         */
-        _getFormObj : function() {
-            var obj = {};
-            $.each($('.afdui-td-input'), function(index, value) {
-                obj[value.id.slice(7)] = value;
-            });
-            return obj;
-        },
-        /**
-         * Judgment form content is in line with the overall form of a
+         * Judgment form content is in line with 
+         * the overall form of a
          * combination of verification
          * 
          * @function
@@ -352,8 +433,8 @@
          * @memberOf tabledetail#
          */
         _validateForm : function() {
-            if (typeof this.options.formValidator === 'function' && $('.afdui-td-input')[0].disabled === false) {
-                var msg = this.options.formValidator(this._getFormObj());
+            if ($.isFunction(this.options.formValidator) && $('.afdui-td-input')[0].disabled === false) {
+                var msg = this.options.formValidator(this.getCurrent());
                 if (typeof msg === 'string') {
                     var html = '&lt;div id = tblDetailDialog>' + msg + '&lt;/div>';
                     $(html).appendTo(this.element);
@@ -755,9 +836,11 @@
                 self._updateDetail(self._selected_tr, id, inputself.value);
             }
 
-            $('#form_message').hide().html(self.options.language.form.sSaving.length === '0' ? 'Saving...' : self.options.language.form.sSaving).slideDown(3000, function() {
-                $(this).hide();
-            });
+            $('#form_message').hide().html(
+                    self.options.language.form.sSaving.length === '0' ? 'Saving...' : self.options.language.form.sSaving)
+                    .slideDown(3000, function() {
+                        $(this).hide();
+                    });
         },
         /**
          * the click event handler of new button
@@ -770,9 +853,10 @@
          */
         _handle_btn_new : function(event) {
             var self = event.data;
-            if(!self._trigger("beforeNewButton", event, null)) {
+            if (!self._trigger("beforeNewButton", event, null)) {
                 return;
             }
+
             if (self._validateForm() === false) {
                 return;
             }
@@ -799,9 +883,10 @@
          */
         _handle_btn_save : function(event) {
             var self = event.data;
-            if(!self._trigger("beforeSaveButton", event, null)) {
+            if (!self._trigger("beforeSaveButton", event, null)) {
                 return;
             }
+
             if (self._validateForm() === false) {
                 return;
             }
@@ -838,11 +923,14 @@
          */
         _handle_btn_delete : function(event) {
             var self = event.data;
-            if(!self._trigger("beforeDeleteButton", event, null)) {
+            if (!self._trigger("beforeDeleteButton", event, null)) {
                 return;
             }
             var deleted = self._table.find('tr.clickedtr');
             var td = self._table.dataTable(), data = td.fnGetData(deleted[0]);
+            if (!self._deleteRemoteAjax(data)) {
+                return;
+            }
             $('.afdui-td-input').each(function(key, val) {
                 val.value = "";
                 if (val.tagName === "SELECT") {
@@ -850,7 +938,6 @@
                 }
             });
 
-            self._deleteRemoteAjax(data);
             td.fnDeleteRow(td.fnGetPosition(deleted[0]));
 
             self._setDetailStatus("delete");
@@ -866,7 +953,7 @@
          */
         _handle_btn_close : function(event) {
             var self = event.data;
-            if(!self._trigger("beforeCloseButton", event, null)) {
+            if (!self._trigger("beforeCloseButton", event, null)) {
                 return;
             }
             self.destroy();
@@ -901,8 +988,9 @@
                 "type" : "PUT",
                 "contentType" : "application/json",
                 "dataType" : "json",
-                "data" : data
-            };
+                "data" : data,
+                "async" : false
+            }, statusCode = '200';
             updateRemoteAjax.success =
             /**
              * @ignore
@@ -917,11 +1005,17 @@
              * @ignore
              */
             function(xhr) {
+                statusCode = xhr.status;
                 if (!self._trigger('editErrorMsg', null, xhr.status)) {
                     return;
                 }
             };
             $.ajax(updateRemoteAjax);
+            if (statusCode !== '200') {
+                return false;
+            } else {
+                return true;
+            }
         },
         /**
          * delete data，Ajax to remote
@@ -935,9 +1029,11 @@
             var key = deleteRemoteUrl.match(/_.+?_/g)[0];
             var value = data[key.slice(1, key.length - 1)];
             var deleteRemoteAjax = null;
+            var statusCode = '200';
             deleteRemoteAjax = {
                 "url" : deleteRemoteUrl.replace(/_.+?_/g, value),
-                "type" : "DELETE"
+                "type" : "DELETE",
+                "async" : false
             };
             deleteRemoteAjax.success =
             /**
@@ -953,11 +1049,17 @@
              * @ignore
              */
             function(xhr) {
+                statusCode = xhr.status;
                 if (!self._trigger('delErrorMsg', null, xhr)) {
                     return;
                 }
             };
             $.ajax(deleteRemoteAjax);
+            if (statusCode !== '200') {
+                return false;
+            } else {
+                return true;
+            }
         },
         /**
          * create data，Ajax to remote
@@ -968,13 +1070,14 @@
          */
         _createRemoteAjax : function(data) {
             var createRemoteUrl = this.options.remoteAjax.create, self = this;
-            var createRemoteAjax = null;
+            var createRemoteAjax = null, statusCode = '200';
             createRemoteAjax = {
                 "url" : createRemoteUrl,
                 "type" : "POST",
                 "contentType" : "application/json",
                 "dataType" : "json",
-                "data" : data
+                "data" : data,
+                "async" : false
             };
             createRemoteAjax.success =
             /**
@@ -990,11 +1093,17 @@
              * @ignore
              */
             function(xhr) {
+                statusCode = xhr.status;
                 if (!self._trigger('createErrorMsg', null, xhr.status)) {
                     return;
                 }
             };
             $.ajax(createRemoteAjax);
+            if (statusCode !== '200') {
+                return false;
+            } else {
+                return true;
+            }
         },
         /**
          * search the input element from options by id
@@ -1069,7 +1178,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Mar 18 2013 17:27:07 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed Apr 03 2013 15:25:26 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
