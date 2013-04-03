@@ -89,6 +89,543 @@
         <dl>
             
 <dt>
+    <h4 class="name" id="detailControl"><span class="type-signature"></span>detailControl<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        the control definition.
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+        <h5 class="subsection-title">Properties:</h5>
+        
+        <dl>
+
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>label</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">control label text</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">control id</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">control type:input, select</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>format</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">control value format:text,number</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>readonly</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">readonly control can not be edit</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maxlength</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the value maxlength</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">control width</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>mask</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the control input mask, see jQuery.maskedit document</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the control input tip message</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>validator</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the control value validate function</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>customData</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the control init value function, will be call when create new data</td>
+        </tr>
+	
+	
+	</tbody>
+</table></dl>
+        
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="afdui.tabledetail.js.html">afdui.tabledetail.js</a>, line 103
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code> example code:
+            {
+                "label" : "Name",
+                "id" : "name",
+                "type" : "input",
+                "format" : "text",
+                "readonly" : false,
+                "maxlength" : 32,
+                "size" : 32,
+                "validator" : function(value) {
+                    return (1 <= value.length && value.length <= 32);
+                },
+                "customData" : function() {
+                    return '2400000';
+                },
+                "message" : "Name length between in 1 - 32"
+            }</code></pre>
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="detailPage"><span class="type-signature"></span>detailPage<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The table detail category tab page definition.
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+        <h5 class="subsection-title">Properties:</h5>
+        
+        <dl>
+
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">tab title (category)</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>rows</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the page layout define</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>cols</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the page layout define</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>controls</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#detailControl">detailControl</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the control definition array.</td>
+        </tr>
+	
+	
+	</tbody>
+</table></dl>
+        
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="afdui.tabledetail.js.html">afdui.tabledetail.js</a>, line 104
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code> example code:
+            {
+                "title" : "General Info",
+                "rows" : 2,
+                "cols" : 4,
+                "controls" : [...]
+            } </code></pre>
+
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="options"><span class="type-signature"></span>options<span class="type-signature"> :<a href="global.html#tableDetailOptions">tableDetailOptions</a></span></h4>
     
     
@@ -123,7 +660,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="afdui.tabledetail.js.html">afdui.tabledetail.js</a>, line 113
+        <a href="afdui.tabledetail.js.html">afdui.tabledetail.js</a>, line 216
     </li></ul></dd>
     
     
@@ -284,6 +821,142 @@
 </dl>
 
     
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code> example code:
+buttons:{"new" : {
+                text : "new",
+                id : "detail_btn_new",
+                click : function() {
+                }
+            },
+            ......
+           }</code></pre>
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="tableDetailForm"><span class="type-signature"></span>tableDetailForm<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The table detail form layout and function definition.
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+        <h5 class="subsection-title">Properties:</h5>
+        
+        <dl>
+
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>pages,</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#detailPage">detailPage</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">detail page array</td>
+        </tr>
+	
+	
+	</tbody>
+</table></dl>
+        
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="afdui.tabledetail.js.html">afdui.tabledetail.js</a>, line 105
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code> example code:
+            "form" : {
+                "pages" : [{
+                    "title" : "General Info",
+                    "rows" : 2,
+                    "cols" : 4,
+                    "controls" : [{
+                        "label" : "ID",
+                        "id" : "id",
+                        "type" : "input",
+                        "format" : "number",
+                        "readonly" : false,
+                        "maxlength" : 10,
+                        "size" : 10
+                    ......
+            }</code></pre>
+
     
 </dd>
 
@@ -453,7 +1126,7 @@
             <td class="type">
             
                 
-<span class="param-type">tableDetailTable</span>
+<span class="param-type"><a href="global.html#tableDetailTable">tableDetailTable</a></span>
 
 
             
@@ -476,7 +1149,7 @@
             <td class="type">
             
                 
-<span class="param-type">tableDetailForm</span>
+<span class="param-type"><a href="global.html#tableDetailForm">tableDetailForm</a></span>
 
 
             
@@ -515,7 +1188,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="afdui.tabledetail.js.html">afdui.tabledetail.js</a>, line 94
+        <a href="afdui.tabledetail.js.html">afdui.tabledetail.js</a>, line 106
     </li></ul></dd>
     
     
@@ -527,6 +1200,85 @@
 </dl>
 
     
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="tableDetailTable"><span class="type-signature"></span>tableDetailTable<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The table definition object, the table definition 
+             same as jQuery.datatables options
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="afdui.tabledetail.js.html">afdui.tabledetail.js</a>, line 102
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code> example code:
+            "table" : {
+                "sScrollY" : "220px",
+                "iDisplayLength" : 10,
+                "aoColumns" : [{
+                    "sTitle" : "ID",
+                    "mData" : "id",
+                    "sWidth" : "15%"
+                }, {
+                    "sTitle" : "Name",
+                    "mData" : "name",
+                    "sWidth" : "45%"
+                }, {
+                    "sTitle" : "Alias",
+                    "mData" : "alias",
+                    "sWidth" : "20%"
+                }, {
+                    "sTitle" : "Voltage Level",
+                    "mData" : "voltageLevel",
+                    "sWidth" : "20%"
+                }]
+            }</code></pre>
+
     
 </dd>
 
@@ -548,13 +1300,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="tabledetail.html">tabledetail</a></li></ul><h3>Namespaces</h3><ul><li><a href="afdui.tabledetail.html">tabledetail</a></li></ul><h3>Global</h3><ul><li><a href="global.html#options">options</a></li><li><a href="global.html#tableDetailButtons">tableDetailButtons</a></li><li><a href="global.html#tableDetailOptions">tableDetailOptions</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="tabledetail.html">tabledetail</a></li></ul><h3>Global</h3><ul><li><a href="global.html#detailControl">detailControl</a></li><li><a href="global.html#detailPage">detailPage</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#tableDetailButtons">tableDetailButtons</a></li><li><a href="global.html#tableDetailForm">tableDetailForm</a></li><li><a href="global.html#tableDetailOptions">tableDetailOptions</a></li><li><a href="global.html#tableDetailTable">tableDetailTable</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed Apr 03 2013 15:25:26 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Apr 04 2013 01:53:59 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

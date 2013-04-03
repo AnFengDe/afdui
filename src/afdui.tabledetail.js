@@ -1,5 +1,5 @@
 /**
- * @fileoverview afdui.tabledetail widget
+ * @fileoverview afdui.tabledetail widget implementation.
  * @author chtian@anfengde.com
  * @author afd.zwhu@gmail.com
  * @author afd.dhhuang@gmail.com
@@ -12,9 +12,9 @@
      * the table detail widget for show record list and edit detail.
      * 
      * @name tabledetail
-     * @class afdui.tabledetail is derived form jQuery.ui.dialog.
+     * @class
+     * @property {tableDetailOptions} options the tabledetail widget options
      */
-    /** @namespace afdui.tabledetail */
     $.widget("afdui.tabledetail", $.ui.dialog, {
         /**
          * table default options
@@ -34,6 +34,15 @@
          * @property {String} text the button's caption
          * @property {String} id the button's id
          * @property {Function} click the click handler function
+         * @example example code:
+         * buttons:{"new" : {
+                text : "new",
+                id : "detail_btn_new",
+                click : function() {
+                }
+            },
+            ......
+           }
          */
         /**
          * default buttons
@@ -90,7 +99,101 @@
                 "sSaving" : "",
             }
         },
-
+        /**
+         * @name tableDetailTable
+         * @description The table definition object, the table definition 
+         *              same as jQuery.datatables options
+         * @example example code:
+            "table" : {
+                "sScrollY" : "220px",
+                "iDisplayLength" : 10,
+                "aoColumns" : [{
+                    "sTitle" : "ID",
+                    "mData" : "id",
+                    "sWidth" : "15%"
+                }, {
+                    "sTitle" : "Name",
+                    "mData" : "name",
+                    "sWidth" : "45%"
+                }, {
+                    "sTitle" : "Alias",
+                    "mData" : "alias",
+                    "sWidth" : "20%"
+                }, {
+                    "sTitle" : "Voltage Level",
+                    "mData" : "voltageLevel",
+                    "sWidth" : "20%"
+                }]
+            }
+         */
+        /**
+         * @name detailControl
+         * @description the control definition.
+         * @property {String} label control label text
+         * @property {String} id control id
+         * @property {String} type control type:input, select
+         * @property {String} format control value format:text,number
+         * @property {Boolean} readonly readonly control can not be edit
+         * @property {Integer} maxlength the value maxlength
+         * @property {Integer} size control width
+         * @property {String} mask the control input mask, see jQuery.maskedit document
+         * @property {String} message the control input tip message
+         * @property {Function} validator the control value validate function
+         * @property {Function} customData the control init value function, will be call when create new data
+         * @example example code:
+            {
+                "label" : "Name",
+                "id" : "name",
+                "type" : "input",
+                "format" : "text",
+                "readonly" : false,
+                "maxlength" : 32,
+                "size" : 32,
+                "validator" : function(value) {
+                    return (1 <= value.length && value.length <= 32);
+                },
+                "customData" : function() {
+                    return '2400000';
+                },
+                "message" : "Name length between in 1 - 32"
+            }
+          */ 
+        /**
+         * @name detailPage
+         * @description The table detail category tab page definition.
+         * @property {String} title tab title (category)
+         * @property {Integer} rows the page layout define
+         * @property {Integer} cols the page layout define
+         * @property {detailControl} controls the control definition array.
+         * @example example code:
+            {
+                "title" : "General Info",
+                "rows" : 2,
+                "cols" : 4,
+                "controls" : [...]
+            } 
+         */
+        /**
+         * @name tableDetailForm
+         * @description The table detail form layout and function definition.
+         * @property {detailPage} pages, detail page array
+         * @example example code:
+            "form" : {
+                "pages" : [{
+                    "title" : "General Info",
+                    "rows" : 2,
+                    "cols" : 4,
+                    "controls" : [{
+                        "label" : "ID",
+                        "id" : "id",
+                        "type" : "input",
+                        "format" : "number",
+                        "readonly" : false,
+                        "maxlength" : 10,
+                        "size" : 10
+                    ......
+            }
+         */
         /**
          * @name tableDetailOptions
          * @description tabledetail options
@@ -206,7 +309,6 @@
             this._tabs.tabs("destroy").remove();
             $.ui.dialog.prototype.destroy.apply(this);
             this._unbindEvents();
-            
         },
 
         /**
@@ -280,6 +382,8 @@
          * 
          * @function
          * @memberOf tabledetail#
+         * @param {String} id the input control id
+         * @param {String} value the css name
          * @return {Boolean} return boolean of input
          *         is have class 
          */
@@ -292,6 +396,7 @@
          * 
          * @function
          * @memberOf tabledetail#
+         * @param {String} id the button id, see tableDetailButtons definition
          * @return {Boolean} return boolean of button
          *         is disabled 
          */
@@ -304,6 +409,7 @@
          * 
          * @function
          * @memberOf tabledetail#
+         * @param {Integer} index index of data row.
          * @return {Object} the row css style in table, 
          *             if no data in form,
          *             return empty object
